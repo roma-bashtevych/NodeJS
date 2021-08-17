@@ -69,13 +69,13 @@ const dir2000 = path.join(__dirname, '2000');
  перебираємо масивом forEach отримуємо назву з нею через метод readFile доступаємось до кожного
  файла
  */
-function searchFile(pathToDir){
+function searchFile(pathToDir) {
     fs.readdir(pathToDir, (err, files) => {
         files.forEach(file => {
             fs.readFile(path.join(pathToDir, file), (err1, data) => {
-                if (err1) console.log(err1)
+                if (err1) throw new Error(err1)
                 let person = JSON.parse(data)
-                renameFunc(person.gender,pathToDir, file);
+                renameFunc(person.gender, pathToDir, file);
             })
         })
     })
@@ -84,9 +84,9 @@ function searchFile(pathToDir){
 /* у ф-ції перевіряємо чи виконується умова
 і методом rename переносимо файли
  */
-function renameFunc(gender,pathDir, nameDoc) {
+function renameFunc(gender, pathDir, nameDoc) {
     let years = '';
-    (gender === 'male') ?years = '2000': years = '1800'
+    (gender === 'male') ? years = '2000' : years = '1800'
     fs.rename(
         path.join(pathDir, nameDoc),
         path.join(__dirname, years, nameDoc),
