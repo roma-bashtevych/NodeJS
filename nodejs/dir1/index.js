@@ -69,33 +69,62 @@ const dir2000 = path.join(__dirname, '2000');
  перебираємо масивом forEach отримуємо назву з нею через метод readFile доступаємось до кожного
  файла
  */
-function searchFile(pathToDir) {
-    fs.readdir(pathToDir, (err, files) => {
-        files.forEach(file => {
-            fs.readFile(path.join(pathToDir, file), (err1, data) => {
-                if (err1) throw new Error(err1)
-                let person = JSON.parse(data)
-                renameFunc(person.gender, pathToDir, file);
-            })
-        })
-    })
-}
+// function searchFile(pathToDir) {
+//     fs.readdir(pathToDir, (err, files) => {
+//         files.forEach(file => {
+//             fs.readFile(path.join(pathToDir, file), (err1, data) => {
+//                 if (err1) throw new Error(err1)
+//                 let person = JSON.parse(data)
+//                 renameFunc(person.gender, pathToDir, file);
+//             })
+//         })
+//     })
+// }
 
 /* у ф-ції перевіряємо чи виконується умова
 і методом rename переносимо файли
  */
-function renameFunc(gender, pathDir, nameDoc) {
-    let years = '';
-    (gender === 'male') ? years = '2000' : years = '1800'
-    fs.rename(
-        path.join(pathDir, nameDoc),
-        path.join(__dirname, years, nameDoc),
-        err => {
-            console.log(err)
-        }
-    )
-}
+// function renameFunc(gender, pathDir, nameDoc) {
+//     let years = '';
+//     (gender === 'male') ? years = '2000' : years = '1800'
+//     fs.rename(
+//         path.join(pathDir, nameDoc),
+//         path.join(__dirname, years, nameDoc),
+//         err => {
+//             console.log(err)
+//         }
+//     )
+// }
+//
+// searchFile(dir1800);
+// searchFile(dir2000);
 
-searchFile(dir1800);
-searchFile(dir2000);
+/*
+* вам потрбіно перемісти всі файлики з вкладених папок в іншу папку. Зробити всі файли на одному рівні вкладеності.
+(Більше інформації в записі лекції)
+ */
 
+// function starTask (patH){
+//     fs.readdir(patH, (err,files) =>
+//     files.forEach(file => {
+//         const newPath = path.join(patH, file)
+//         fs.stat(newPath,  (err1, stats) => {
+//          if(err1) console.log(err1)
+//             if(stats.isFile()){
+//                 fs.rename(
+//                     path.join(newPath),
+//                     path.join(__dirname, '2000', file),
+//                     err2 => {
+//                         console.log(err2)
+//                     }
+//                 )
+//             } else if (stats.isDirectory()){
+//                 starTask(newPath)
+//             }
+//
+//         } )
+//     }))
+// }
+//
+//
+// starTask(dir1800);
