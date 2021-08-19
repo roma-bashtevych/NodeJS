@@ -1,0 +1,26 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roma-bashtevych/NodeJS.git"
+  },
+  "keywords": [
+    "[]"
+  ],
+  "author": "Roman Bashtevych",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/roma-bashtevych/NodeJS/issues"
+  },
+  "homepage": "https://github.com/roma-bashtevych/NodeJS#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-handlebars": "^5.3.3"
+  }
+}
