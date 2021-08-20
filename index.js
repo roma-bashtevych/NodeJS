@@ -39,13 +39,13 @@ app.get('/users/:user_id', (req, res) => {
 
     if (!countUser) {
         res.status(404).end('User Not Found');
-        return
+        return;
     }
     res.render('user', {countUser});
 });
 
 // Шукаємо співпадіння логіна , якщо співпадіння немає пушимо новий обєкт в масив і записуємо у файл
-app.post('/registration', (req, res) => {
+app.post('/users', (req, res) => {
     const newUser = users.find(user => {
         const {login} = req.body;
         return user.login === login;
@@ -60,7 +60,7 @@ app.post('/registration', (req, res) => {
                     }
                 });
         res.redirect('/users');
-        return
+        return;
     }
     res.render('/login');
 })
@@ -73,7 +73,7 @@ app.post('/login', (req, res) => {
 
     if (userIndex !== -1) {
         res.redirect(`/users/${userIndex}`);
-        return
+        return;
     }
     res.redirect('/registration');
 })
