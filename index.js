@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 
 app.get('/registration', (req, res) => {
     res.render('registration');
-})
+});
 
 // передаємо опшинами масив який буде відображатись на сторінці
 app.get('/users', (req, res) => {
@@ -35,49 +35,53 @@ app.get('/users', (req, res) => {
 // динамічно змінюємо user_id залежно від місця юзера в масиві
 app.get('/users/:user_id', (req, res) => {
     const {user_id} = req.params;
+
     const countUser = users[user_id];
 
     if (!countUser) {
         res.status(404).end('User Not Found');
         return;
     }
+
     res.render('user', {countUser});
 });
 
 // Шукаємо співпадіння логіна , якщо співпадіння немає пушимо новий обєкт в масив і записуємо у файл
 app.post('/users', (req, res) => {
-    const newUser = users.find(user => {
-        const {login} = req.body;
-        return user.login === login;
-    })
+    const {login} = req.body;
+
+    const newUser = users.find(user =>  user.login === login);
 
      if (!newUser) {
         users.push(req.body);
+
         fs.writeFile(userPath, `module.exports = ${JSON.stringify(users)}`,
                 err => {
                     if(err){
                         console.log(err)
                     }
                 });
+
         res.redirect('/users');
         return;
     }
+
     res.render('/login');
-})
+});
 
 app.post('/login', (req, res) => {
-    const userIndex = users.findIndex(user => {
-        const {login, password} = req.body;
-        return user.login === login && +user.password === +password;
-    })
+    const {login, password} = req.body;
+
+    const userIndex = users.findIndex(user => user.login === login && +user.password === +password);
 
     if (userIndex !== -1) {
         res.redirect(`/users/${userIndex}`);
         return;
     }
+
     res.redirect('/registration');
-})
+});
 
 app.listen(PORT, () => {
     console.log(`app listen port ${PORT}`);
-})
+});
