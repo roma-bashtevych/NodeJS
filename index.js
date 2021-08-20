@@ -26,6 +26,7 @@ app.get('/', (req, res) => {
 app.get('/registration', (req, res) => {
     res.render('registration');
 })
+
 // передаємо опшинами масив який буде відображатись на сторінці
 app.get('/users', (req, res) => {
     res.render('users', {title: 'users', users});
@@ -35,19 +36,29 @@ app.get('/users', (req, res) => {
 app.get('/users/:user_id', (req, res) => {
     const {user_id} = req.params;
     const countUser = users[user_id];
+
     if (!countUser) {
         res.status(404).end('User Not Found');
+        return
     }
     res.render('user', {countUser});
 });
-// Шукаємо співпадіння логіна і пароля, якщо співпадіння немає пушимо новий обєкт в масив і записуємо у файл
+
+// Шукаємо співпадіння логіна , якщо співпадіння немає пушимо новий обєкт в масив і записуємо у файл
 app.post('/registration', (req, res) => {
     const newUser = users.find(user => {
-        return user.login === req.body.login && user.password === +req.body.password;
+        const {login} = req.body;
+        return user.login === login;
     })
+
      if (!newUser) {
         users.push(req.body);
-        fs.writeFile(userPath, `module.exports = ${JSON.stringify(users)}`,err => console.log(err))
+        fs.writeFile(userPath, `module.exports = ${JSON.stringify(users)}`,
+                err => {
+                    if(err){
+                        console.log(err)
+                    }
+                });
         res.redirect('/users');
         return
     }
@@ -56,8 +67,10 @@ app.post('/registration', (req, res) => {
 
 app.post('/login', (req, res) => {
     const userIndex = users.findIndex(user => {
-        return user.login === req.body.login && +user.password === +req.body.password;
+        const {login, password} = req.body;
+        return user.login === login && +user.password === +password;
     })
+
     if (userIndex !== -1) {
         res.redirect(`/users/${userIndex}`);
         return
