@@ -1,46 +1,54 @@
-const { writeUser, getUsers } = require('../services/user.services');
+const userService = require('../services/user.services');
 
 module.exports = {
-  getSingleUser: async (req, res) => {
+  getSingleUser: (req, res, next) => {
     try {
-      const { user_id } = req.params;
-      const users = await getUsers();
-      const user = users[user_id];
-
-      if (!user) {
-        res.status(404).json('User not found');
-        return;
-      }
+      const { user } = req;
       res.json(user);
     } catch (e) {
-      res.status(404).res.json('Error');
+      next(e);
     }
   },
 
-  getAllUsers: async (req, res) => {
+  getAllUsers: async (req, res, next) => {
     try {
-      const users = await getUsers();
+      const users = await userService.findUsers({});
       res.json(users);
     } catch (e) {
-      res.status(404).res.json('Error');
+      next(e);
     }
   },
 
-  createUser: async (req, res) => {
+  createUser: async (req, res, next) => {
     try {
-      const { login } = req.body;
-      const users = await getUsers();
-      const newUser = users.find((user) => user.login === login);
+      const createdUser = await userService.createUser(req.body);
 
-      if (!newUser) {
-        users.push(req.body);
-        await writeUser(users);
-        res.json(users);
-        return;
-      }
-      res.json('sorry user don"t add to users array');
+      res.json(createdUser);
     } catch (e) {
-      res.status(404).res.json('Error');
+      next(e);
     }
-  }
+  },
+
+  deleteUser: async (req, res, next) => {
+    try {
+      const { user_id } = req.params;
+
+      await userService.deleteUser({ _id: user_id });
+      res.status(204).json(`User with id ${user_id} is deleted`);
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  updateUser: async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+
+      await userService.updateUserById(userId, req.body);
+
+      res.json('updated');
+    } catch (e) {
+      next(e);
+    }
+  },
 };
