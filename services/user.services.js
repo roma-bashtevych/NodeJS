@@ -9,5 +9,5 @@ module.exports = {
 
   getUserById: (userId) => User.findById(userId),
 
-  updateUserById: (userId, data) => User.findByIdAndUpdate(userId, data)
+  updateUserById: (userId, data) => User.updateOne(userId, data)
 };

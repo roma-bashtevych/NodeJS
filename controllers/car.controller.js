@@ -1,4 +1,5 @@
 const carService = require('../services/car.services');
+const { DELETED_MESSAGE, UPDATE_MESSAGE } = require('../config/message');
 
 module.exports = {
   getSingleCar: (req, res, next) => {
@@ -35,10 +36,21 @@ module.exports = {
       const { car_id } = req.params;
       await carService.deleteCar({ _id: car_id });
 
-      res.status(204).json(`Car with id ${car_id} is deleted`);
+      res.status(204).json(DELETED_MESSAGE);
       next();
     } catch (e) {
       next(e);
     }
-  }
+  },
+  updateCar: async (req, res, next) => {
+    try {
+      const { car_id } = req.params;
+
+      await carService.updateCarById({ _id: car_id }, req.body);
+
+      res.status(201).json(UPDATE_MESSAGE);
+    } catch (e) {
+      next(e);
+    }
+  },
 };

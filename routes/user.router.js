@@ -7,6 +7,7 @@ router.get('/', userController.getAllUsers);
 router.get('/:user_id', isUserPresent, userController.getSingleUser);
 router.post('/', isValidUserData, checkUniqueEmail, userController.createUser);
 router.delete('/:user_id', isUserPresent, userController.deleteUser);
+router.patch('/:user_id', isUserPresent, userController.updateUser);
 
 module.exports = router;
 

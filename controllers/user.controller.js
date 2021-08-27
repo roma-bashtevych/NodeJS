@@ -1,4 +1,5 @@
 const userService = require('../services/user.services');
+const { DELETED_MESSAGE, UPDATE_MESSAGE } = require('../config/message');
 
 module.exports = {
   getSingleUser: (req, res, next) => {
@@ -34,7 +35,7 @@ module.exports = {
       const { user_id } = req.params;
 
       await userService.deleteUser({ _id: user_id });
-      res.status(204).json(`User with id ${user_id} is deleted`);
+      res.status(204).json(DELETED_MESSAGE);
     } catch (e) {
       next(e);
     }
@@ -42,13 +43,13 @@ module.exports = {
 
   updateUser: async (req, res, next) => {
     try {
-      const { userId } = req.params;
+      const { user_id } = req.params;
 
-      await userService.updateUserById(userId, req.body);
+      await userService.updateUserById({ _id: user_id }, req.body);
 
-      res.json('updated');
+      res.status(201).json(UPDATE_MESSAGE);
     } catch (e) {
       next(e);
     }
-  },
+  }
 };
