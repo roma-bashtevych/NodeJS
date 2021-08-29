@@ -1,11 +1,16 @@
 const userService = require('../services/user.services');
 const { DELETED_MESSAGE, UPDATE_MESSAGE } = require('../config/message');
+const passwordServices = require('../services/password.services');
+const User = require('../database/User');
+const { userNormalizator } = require('../utils/user.util');
 
 module.exports = {
   getSingleUser: (req, res, next) => {
     try {
       const { user } = req;
-      res.json(user);
+      const userToReturn = userNormalizator(user);
+
+      res.json(userToReturn);
     } catch (e) {
       next(e);
     }
@@ -22,9 +27,13 @@ module.exports = {
 
   createUser: async (req, res, next) => {
     try {
-      const createdUser = await userService.createUser(req.body);
+      const { password } = req.body;
+      const hashedPassword = await passwordServices.hash(password);
+      const createdUser = await User.create({ ...req.body, password: hashedPassword });
 
-      res.json(createdUser);
+      const userToReturn = userNormalizator(createdUser);
+
+      res.json(userToReturn);
     } catch (e) {
       next(e);
     }

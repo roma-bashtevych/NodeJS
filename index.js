@@ -10,9 +10,10 @@ mongoose.connect('mongodb://localhost:27017/apr-2021');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const { userRouter, carRouter } = require('./routes');
+const { userRouter, carRouter, authRouter } = require('./routes');
 
 app.get('/ping', (req, res) => res.json('pong'));
+app.use('/auth', authRouter);
 app.use('/users', userRouter);
 app.use('/cars', carRouter);
 app.use('*', _notFoundError);
