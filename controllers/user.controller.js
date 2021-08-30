@@ -18,9 +18,7 @@ module.exports = {
 
   getAllUsers: async (req, res, next) => {
     try {
-      const query = req;
-
-      const users = await userService.findUsers(query);
+      const users = await userService.findUsers(req.query);
       res.json(users);
     } catch (e) {
       next(e);
