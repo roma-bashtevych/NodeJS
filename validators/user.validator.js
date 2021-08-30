@@ -9,7 +9,9 @@ const queryUserValidator = Joi.object({
     .trim(),
   email: Joi.string()
     .regex(EMAIL_REGEXP)
-    .trim()
+    .trim(),
+  role: Joi.string()
+    .allow(...Object.values(userRolesEnum))
 });
 
 const createUserValidator = Joi.object({
@@ -33,7 +35,6 @@ const createUserValidator = Joi.object({
 
 const updateUserValidator = Joi.object({
   login: Joi.string()
-    .alphanum()
     .min(3)
     .max(30)
     .trim(),
