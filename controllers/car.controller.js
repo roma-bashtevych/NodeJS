@@ -6,7 +6,6 @@ module.exports = {
     try {
       const { car } = req;
       res.json(car);
-      next();
     } catch (e) {
       next(e);
     }
@@ -14,7 +13,7 @@ module.exports = {
 
   getAllCar: async (req, res, next) => {
     try {
-      const cars = await carService.findCars({});
+      const cars = await carService.findCars(req.query);
       res.json(cars);
     } catch (e) {
       next(e);
@@ -37,7 +36,6 @@ module.exports = {
       await carService.deleteCar({ _id: car_id });
 
       res.status(204).json(DELETED_MESSAGE);
-      next();
     } catch (e) {
       next(e);
     }

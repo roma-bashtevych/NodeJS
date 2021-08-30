@@ -4,9 +4,9 @@ const userService = require('../services/user.services');
 const {
   NOT_FOUND,
   EMAIL_ALREADY,
-  EMPTY_LOGIN_PASS,
   INVALID_OPTION
 } = require('../config/message');
+const statusCode = require('../config/status');
 const userValidator = require('../validators/user.validator');
 
 module.exports = {
@@ -16,7 +16,7 @@ module.exports = {
 
       const user = await userService.getUserById(user_id);
       if (!user) {
-        throw new ErrorHandler(404, NOT_FOUND);
+        throw new ErrorHandler(statusCode.NOT_FOUND, NOT_FOUND);
       }
       req.user = user;
       next();
@@ -24,6 +24,7 @@ module.exports = {
       next(e);
     }
   },
+
   checkUniqueEmail: async (req, res, next) => {
     try {
       const { email } = req.body;
@@ -31,7 +32,7 @@ module.exports = {
       const userByEmail = await User.findOne({ email });
 
       if (userByEmail) {
-        throw new ErrorHandler(409, EMAIL_ALREADY);
+        throw new ErrorHandler(statusCode.ITEM_ALREADY_EXIST, EMAIL_ALREADY);
       }
 
       next();
@@ -39,40 +40,26 @@ module.exports = {
       next(e);
     }
   },
-  isValidUserData: (req, res, next) => {
-    try {
-      const {
-        login,
-        password
-      } = req.body;
 
-      if (!login || !password) {
-        throw new ErrorHandler(400, EMPTY_LOGIN_PASS);
-      }
-
-      next();
-    } catch (e) {
-      next(e);
-    }
-  },
   validateCreateUserBody: (req, res, next) => {
     try {
       const { error } = userValidator.createUserValidator.validate(req.body);
 
       if (error) {
-        throw new ErrorHandler(400, error.details[0].message);
+        throw new ErrorHandler(statusCode.NOT_VALID_DATA, error.details[0].message);
       }
       next();
     } catch (e) {
       next(e);
     }
   },
+
   validateUpdateUserBody: (req, res, next) => {
     try {
       const { error } = userValidator.updateUserValidator.validate(req.body);
 
       if (error) {
-        throw new ErrorHandler(400, error.details[0].message);
+        throw new ErrorHandler(statusCode.NOT_VALID_DATA, error.details[0].message);
       }
 
       next();
@@ -80,12 +67,13 @@ module.exports = {
       next(e);
     }
   },
+
   validateUserQuery: (req, res, next) => {
     try {
       const { error } = userValidator.queryUserValidator.validate(req.query);
 
       if (error) {
-        throw new ErrorHandler(400, INVALID_OPTION);
+        throw new ErrorHandler(statusCode.NOT_VALID_DATA, INVALID_OPTION);
       }
 
       next();
@@ -93,12 +81,13 @@ module.exports = {
       next(e);
     }
   },
+
   validateUserParams: (req, res, next) => {
     try {
       const { error } = userValidator.paramsUserValidator.validate(req.params);
 
       if (error) {
-        throw new ErrorHandler(400, INVALID_OPTION);
+        throw new ErrorHandler(statusCode.NOT_VALID_DATA, INVALID_OPTION);
       }
 
       next();
@@ -106,4 +95,4 @@ module.exports = {
       next(e);
     }
   },
- };
+};

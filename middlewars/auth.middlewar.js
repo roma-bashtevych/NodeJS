@@ -3,6 +3,7 @@ const ErrorHandler = require('../errors/ErrorHandler');
 const passwordHasher = require('../utils/user.util');
 const authentValidator = require('../validators/auth.validator');
 const { WRONG } = require('../config/message');
+const statusCode = require('../config/status');
 
 module.exports = {
   findByEmailPassword: async (req, res, next) => {
@@ -11,7 +12,7 @@ module.exports = {
       const userByLogin = await User.findOne({ login });
 
       if (!userByLogin) {
-        throw new ErrorHandler(400, WRONG);
+        throw new ErrorHandler(statusCode.NOT_VALID_DATA, WRONG);
       }
 
       await passwordHasher.compare(userByLogin.password, password);
@@ -23,12 +24,13 @@ module.exports = {
       next(err);
     }
   },
+
   checkAuthDataValid: (req, res, next) => {
     try {
       const { error } = authentValidator.createValidAuth.validate(req.body);
 
       if (error) {
-        throw new ErrorHandler(400, error.details[0].message);
+        throw new ErrorHandler(statusCode.NOT_VALID_DATA, WRONG);
       }
 
       next();

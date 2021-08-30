@@ -1,0 +1,7 @@
+module.exports = {
+  SERVER_ERROR: 500,
+  NOT_VALID_DATA: 400,
+  NOT_FOUND: 404,
+  ITEM_ALREADY_EXIST: 409,
+  DELETED: 204
+};
