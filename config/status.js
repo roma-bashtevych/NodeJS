@@ -3,5 +3,6 @@ module.exports = {
   NOT_VALID_DATA: 400,
   NOT_FOUND: 404,
   ITEM_ALREADY_EXIST: 409,
-  DELETED: 204
+  DELETED: 204,
+  UPDATE: 201
 };

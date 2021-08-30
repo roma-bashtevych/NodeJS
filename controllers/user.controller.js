@@ -3,6 +3,7 @@ const { DELETED_MESSAGE, UPDATE_MESSAGE } = require('../config/message');
 const passwordServices = require('../services/password.services');
 const User = require('../database/User');
 const { userNormalizator } = require('../utils/user.util');
+const statusCode = require('../config/status');
 
 module.exports = {
   getSingleUser: (req, res, next) => {
@@ -18,6 +19,7 @@ module.exports = {
 
   getAllUsers: async (req, res, next) => {
     try {
+      console.log(req.query);
       const users = await userService.findUsers(req.query);
       const allUsers = users.map((user) => userNormalizator(user));
 
@@ -46,7 +48,7 @@ module.exports = {
       const { user_id } = req.params;
 
       await userService.deleteUser({ _id: user_id });
-      res.status(204).json(DELETED_MESSAGE);
+      res.status(statusCode.DELETED).json(DELETED_MESSAGE);
     } catch (e) {
       next(e);
     }
@@ -58,7 +60,7 @@ module.exports = {
 
       await userService.updateUserById({ _id: user_id }, req.body);
 
-      res.status(201).json(UPDATE_MESSAGE);
+      res.status(statusCode.UPDATE).json(UPDATE_MESSAGE);
     } catch (e) {
       next(e);
     }
