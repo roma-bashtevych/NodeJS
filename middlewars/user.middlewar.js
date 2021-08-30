@@ -71,7 +71,7 @@ module.exports = {
   validateUserQuery: (req, res, next) => {
     try {
       const { error } = userValidator.queryUserValidator.validate(req.query);
-
+console.log(req.query);
       if (error) {
         throw new ErrorHandler(statusCode.NOT_VALID_DATA, INVALID_OPTION);
       }
