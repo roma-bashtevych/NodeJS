@@ -33,10 +33,15 @@ module.exports = {
         login
       } = req.body;
 
-      const userByEmail = await userService.getFindOne({ email });
-      const userByLogin = await userService.getFindOne({ login });
+      const userByEmail = await userService.getFindOne({
+        $or: [
+          { email },
+          { login }
+        ]
+      });
+      // const userByLogin = await userService.getFindOne({ login });
 
-      if (userByEmail || userByLogin) {
+      if (userByEmail) {
         throw new ErrorHandler(statusCode.ITEM_ALREADY_EXIST, INPUT_ALREADY);
       }
 

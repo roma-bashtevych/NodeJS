@@ -10,7 +10,7 @@ const {
     isUserPresent,
     checkUniqueEmail,
     checkUserRole,
-   getUserByDynamicParam
+    getUserByDynamicParam
   }
 } = require('../middlewars');
 
