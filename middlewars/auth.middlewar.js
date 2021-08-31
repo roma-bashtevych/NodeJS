@@ -1,41 +1,39 @@
-const { User } = require('../database/User');
-const ErrorHandler = require('../errors/ErrorHandler');
-const passwordHasher = require('../utils/user.util');
-const authentValidator = require('../validators/auth.validator');
-const { WRONG } = require('../config/message');
+const User = require('../database/User');
 const statusCode = require('../config/status');
+const ErrorHandler = require('../errors/ErrorHandler');
+const authValidator = require('../validators/auth.validator');
+const { EMPTY_LOGIN_PASS } = require('../config/message');
 
 module.exports = {
-  findByEmailPassword: async (req, res, next) => {
+  isUserEmailPresent: async (req, res, next) => {
     try {
-      const { login, password } = req.body;
-      const userByLogin = await User.findOne({ login });
+      const { email } = req.body;
 
-      if (!userByLogin) {
-        throw new ErrorHandler(statusCode.NOT_VALID_DATA, WRONG);
+      const userByEmail = await User.findOne({ email });
+
+      if (!userByEmail) {
+        throw new ErrorHandler(statusCode.NOT_VALID_DATA, EMPTY_LOGIN_PASS);
       }
 
-      await passwordHasher.compare(userByLogin.password, password);
-
-      req.user = userByLogin;
+      req.user = userByEmail;
 
       next();
-    } catch (err) {
-      next(err);
+    } catch (e) {
+      next(e);
     }
   },
 
-  checkAuthDataValid: (req, res, next) => {
+  validateLoginationData: (req, res, next) => {
     try {
-      const { error } = authentValidator.createValidAuth.validate(req.body);
+      const { error } = authValidator.validate(req.body);
 
       if (error) {
-        throw new ErrorHandler(statusCode.NOT_VALID_DATA, WRONG);
+        throw new ErrorHandler(statusCode.NOT_VALID_DATA, EMPTY_LOGIN_PASS);
       }
 
       next();
-    } catch (err) {
-      next(err);
+    } catch (e) {
+      next(e);
     }
-  },
+  }
 };
