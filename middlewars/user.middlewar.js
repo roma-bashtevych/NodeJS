@@ -3,8 +3,9 @@ const ErrorHandler = require('../errors/ErrorHandler');
 const userService = require('../services/user.services');
 const {
   NOT_FOUND,
-  EMAIL_ALREADY,
-  INVALID_OPTION
+  INPUT_ALREADY,
+  INVALID_OPTION,
+  FORBIDDEN
 } = require('../config/message');
 const statusCode = require('../config/status');
 const userValidator = require('../validators/user.validator');
@@ -27,12 +28,16 @@ module.exports = {
 
   checkUniqueEmail: async (req, res, next) => {
     try {
-      const { email } = req.body;
+      const {
+        email,
+        login
+      } = req.body;
 
-      const userByEmail = await User.findOne({ email });
+      const userByEmail = await userService.getFindOne({ email });
+      const userByLogin = await userService.getFindOne({ login });
 
-      if (userByEmail) {
-        throw new ErrorHandler(statusCode.ITEM_ALREADY_EXIST, EMAIL_ALREADY);
+      if (userByEmail || userByLogin) {
+        throw new ErrorHandler(statusCode.ITEM_ALREADY_EXIST, INPUT_ALREADY);
       }
 
       next();
@@ -71,7 +76,7 @@ module.exports = {
   validateUserQuery: (req, res, next) => {
     try {
       const { error } = userValidator.queryUserValidator.validate(req.query);
-console.log(req.query);
+
       if (error) {
         throw new ErrorHandler(statusCode.NOT_VALID_DATA, INVALID_OPTION);
       }
@@ -95,4 +100,39 @@ console.log(req.query);
       next(e);
     }
   },
+
+  checkUserRole: (roleArr = []) => (req, res, next) => {
+    try {
+      const { role } = req.user;
+
+      if (!roleArr.length) {
+        return next();
+      }
+
+      if (!roleArr.includes(role)) {
+        throw new ErrorHandler(statusCode.FORBIDDEN, FORBIDDEN);
+      }
+      next();
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  getUserByDynamicParam: (paramName, searchIn = 'body', dbFiled = paramName) => async (req, res, next) => {
+    try {
+      const value = req[searchIn][paramName];
+
+      const user = await User.findOne({ [dbFiled]: value });
+
+      if (!user) {
+        throw new ErrorHandler(statusCode.NOT_FOUND, INVALID_OPTION);
+      }
+
+      req.user = user;
+
+      next();
+    } catch (e) {
+      next(e);
+    }
+  }
 };

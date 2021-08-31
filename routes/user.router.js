@@ -1,17 +1,23 @@
 const router = require('express').Router();
 
 const { userController } = require('../controllers');
-const { userMiddlewar } = require('../middlewars');
+const {
+  userMiddlewar: {
+    validateUserQuery,
+    validateCreateUserBody,
+    validateUpdateUserBody,
+    validateUserParams,
+    isUserPresent,
+    checkUniqueEmail,
+    checkUserRole,
+   getUserByDynamicParam
+  }
+} = require('../middlewars');
 
-router.get('/', userMiddlewar.validateUserQuery, userController.getAllUsers);
-router.post('/', userMiddlewar.validateCreateUserBody,
-  userMiddlewar.checkUniqueEmail,
-  userController.createUser);
-router.get('/:user_id', userMiddlewar.validateUserParams, userMiddlewar.isUserPresent, userController.getSingleUser);
-router.delete('/:user_id', userMiddlewar.validateUserParams, userMiddlewar.isUserPresent, userController.deleteUser);
-router.patch('/:user_id', userMiddlewar.validateUserParams,
-  userMiddlewar.validateUpdateUserBody,
-  userMiddlewar.isUserPresent,
-  userController.updateUser);
+router.get('/', validateUserQuery, userController.getAllUsers);
+router.post('/', validateCreateUserBody, checkUniqueEmail, userController.createUser);
+router.get('/:user_id', validateUserParams, getUserByDynamicParam('user_id', 'params', '_id'), userController.getSingleUser);
+router.delete('/:user_id', validateUserParams, isUserPresent, checkUserRole(['admin']), userController.deleteUser);
+router.patch('/:user_id', validateUserParams, validateUpdateUserBody, isUserPresent, userController.updateUser);
 
 module.exports = router;

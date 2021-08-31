@@ -1,8 +1,9 @@
 const ErrorHandler = require('../errors/ErrorHandler');
 const carService = require('../services/car.services');
-const { NOT_FOUND, WRONG } = require('../config/message');
+const { NOT_FOUND, WRONG, INVALID_OPTION } = require('../config/message');
 const statusCode = require('../config/status');
 const carValidator = require('../validators/car.validator');
+const Car = require('../database/Car');
 
 module.exports = {
   isCarPresent: async (req, res, next) => {
@@ -73,4 +74,23 @@ module.exports = {
       next(e);
     }
   },
+
+  getCarByDynamicParam: (paramName, searchIn = 'body', dbFiled = paramName) => async (req, res, next) => {
+    try {
+      const value = req[searchIn][paramName];
+
+      const car = await Car.findOne({ [dbFiled]: value });
+
+      if (!car) {
+        throw new ErrorHandler(statusCode.NOT_FOUND, INVALID_OPTION);
+      }
+
+      req.car = car;
+
+      next();
+    } catch (e) {
+      next(e);
+    }
+  }
+
 };

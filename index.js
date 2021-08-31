@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
+require('dotenv').config();
+
 const { PORT, DATABASE_URL } = require('./config/var');
 const { NOT_FOUND } = require('./config/message');
 const statusCode = require('./config/status');
