@@ -2,7 +2,7 @@ const ErrorHandler = require('../errors/ErrorHandler');
 const carService = require('../services/car.services');
 const { NOT_FOUND, WRONG, INVALID_OPTION } = require('../config/message');
 const statusCode = require('../config/status');
-const carValidator = require('../validators/car.validator');
+const { carValidator } = require('../validators');
 const Car = require('../database/Car');
 
 module.exports = {

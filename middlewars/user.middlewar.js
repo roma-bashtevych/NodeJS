@@ -8,7 +8,7 @@ const {
   FORBIDDEN
 } = require('../config/message');
 const statusCode = require('../config/status');
-const userValidator = require('../validators/user.validator');
+const { userValidator } = require('../validators');
 
 module.exports = {
   isUserPresent: async (req, res, next) => {
@@ -33,15 +33,14 @@ module.exports = {
         login
       } = req.body;
 
-      const userByEmail = await userService.getFindOne({
+      const userByEmailorLogin = await userService.getFindOne({
         $or: [
           { email },
           { login }
         ]
       });
-      // const userByLogin = await userService.getFindOne({ login });
 
-      if (userByEmail) {
+      if (userByEmailorLogin) {
         throw new ErrorHandler(statusCode.ITEM_ALREADY_EXIST, INPUT_ALREADY);
       }
 
