@@ -1,4 +1,4 @@
-const Car = require('../database/Car');
+const { Car } = require('../database');
 
 module.exports = {
   findCars: (query) => Car.find(query),

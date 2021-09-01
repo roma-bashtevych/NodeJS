@@ -5,5 +5,5 @@ module.exports = {
   NOT_FOUND: 404,
   ITEM_ALREADY_EXIST: 409,
   DELETED: 204,
-  UPDATE: 201
+  UPDATE_AND_CREATE: 201
 };

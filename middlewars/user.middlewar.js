@@ -1,6 +1,6 @@
-const User = require('../database/User');
-const ErrorHandler = require('../errors/ErrorHandler');
-const userService = require('../services/user.services');
+const { User } = require('../database');
+const { ErrorHandler } = require('../errors');
+const { userServices } = require('../services');
 const {
   NOT_FOUND,
   INPUT_ALREADY,
@@ -15,7 +15,7 @@ module.exports = {
     try {
       const { user_id } = req.params;
 
-      const user = await userService.getUserById(user_id);
+      const user = await userServices.getUserById(user_id);
       if (!user) {
         throw new ErrorHandler(statusCode.NOT_FOUND, NOT_FOUND);
       }
@@ -33,7 +33,7 @@ module.exports = {
         login
       } = req.body;
 
-      const userByEmailorLogin = await userService.getFindOne({
+      const userByEmailorLogin = await userServices.getFindOne({
         $or: [
           { email },
           { login }

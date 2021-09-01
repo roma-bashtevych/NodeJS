@@ -47,7 +47,7 @@ module.exports = {
 
       await carService.updateCarById({ _id: car_id }, req.body);
 
-      res.status(statusCode.UPDATE).json(UPDATE_MESSAGE);
+      res.status(statusCode.UPDATE_AND_CREATE).json(UPDATE_MESSAGE);
     } catch (e) {
       next(e);
     }

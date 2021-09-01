@@ -1,16 +1,16 @@
-const ErrorHandler = require('../errors/ErrorHandler');
-const carService = require('../services/car.services');
+const { ErrorHandler } = require('../errors');
+const { carServices } = require('../services');
 const { NOT_FOUND, WRONG, INVALID_OPTION } = require('../config/message');
 const statusCode = require('../config/status');
 const { carValidator } = require('../validators');
-const Car = require('../database/Car');
+const { Car } = require('../database');
 
 module.exports = {
   isCarPresent: async (req, res, next) => {
     try {
       const { car_id } = req.params;
 
-      const car = await carService.getCarById(car_id);
+      const car = await carServices.getCarById(car_id);
       if (!car) {
         throw new ErrorHandler(statusCode.NOT_FOUND, NOT_FOUND);
       }

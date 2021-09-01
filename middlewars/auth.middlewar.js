@@ -1,6 +1,6 @@
-const User = require('../database/User');
+const { User } = require('../database');
 const statusCode = require('../config/status');
-const ErrorHandler = require('../errors/ErrorHandler');
+const { ErrorHandler } = require('../errors');
 const { authValidator } = require('../validators');
 const { EMPTY_LOGIN_PASS } = require('../config/message');
 

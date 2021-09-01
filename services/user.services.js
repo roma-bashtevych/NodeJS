@@ -1,4 +1,4 @@
-const User = require('../database/User');
+const { User } = require('../database');
 
 module.exports = {
   findUsers: (query) => User.find(query),

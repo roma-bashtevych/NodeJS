@@ -8,6 +8,6 @@ const {
  }
 } = require('../middlewars');
 
-router.post('/', isUserEmailPresent, validateLoginationData, authController.loginUser);
+router.post('/', validateLoginationData, isUserEmailPresent, authController.showUser);
 
 module.exports = router;
