@@ -3,7 +3,7 @@ const { PASSWORD_REGEXP, EMAIL_REGEXP } = require('../config/constants');
 const userRolesEnum = require('../config/user.roles.enum');
 
 const queryUserValidator = Joi.object({
-  login: Joi.string()
+  name: Joi.string()
     .min(2)
     .max(10)
     .trim(),
@@ -15,7 +15,7 @@ const queryUserValidator = Joi.object({
 });
 
 const createUserValidator = Joi.object({
-  login: Joi.string()
+  name: Joi.string()
     .alphanum()
     .min(3)
     .max(30)
@@ -34,7 +34,7 @@ const createUserValidator = Joi.object({
 });
 
 const updateUserValidator = Joi.object({
-  login: Joi.string()
+  name: Joi.string()
     .min(3)
     .max(30)
     .trim(),

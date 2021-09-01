@@ -30,17 +30,17 @@ module.exports = {
     try {
       const {
         email,
-        login
+        name
       } = req.body;
 
-      const userByEmailorLogin = await userServices.getFindOne({
+      const userByEmailorName = await userServices.getFindOne({
         $or: [
           { email },
-          { login }
+          { name }
         ]
       });
 
-      if (userByEmailorLogin) {
+      if (userByEmailorName) {
         throw new ErrorHandler(statusCode.ITEM_ALREADY_EXIST, INPUT_ALREADY);
       }
 
