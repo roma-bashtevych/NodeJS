@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const { USER, OAUTH } = require('../config/database-tables.enum');
 
 const OAuthSchema = new Schema({
   access_token: {
@@ -12,8 +13,8 @@ const OAuthSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     required: true,
-    ref: 'user'
+    ref: USER
   }
 }, { timestamps: true });
 
-module.exports = model('oauth', OAuthSchema);
+module.exports = model(OAUTH, OAuthSchema);

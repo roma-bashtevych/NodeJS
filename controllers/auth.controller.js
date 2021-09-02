@@ -3,6 +3,7 @@ const { jwtServices } = require('../services');
 const { userNormalizator: { userNormalizator } } = require('../utils');
 const { OAuth } = require('../database');
 const { AUTHORIZATION } = require('../config/var');
+const { OK } = require('../config/message');
 
 module.exports = {
   loginUser: async (req, res, next) => {
@@ -34,7 +35,7 @@ module.exports = {
       const access_token = req.get(AUTHORIZATION);
 
       await OAuth.deleteOne({ access_token });
-      res.json('ok');
+      res.json(OK);
     } catch (e) {
       next(e);
     }

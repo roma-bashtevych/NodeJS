@@ -97,7 +97,7 @@ module.exports = {
   checkUserRole: (roleArr = []) => (req, res, next) => {
     try {
       const { user, loginUser } = req;
-      console.log(user.id, loginUser.id);
+      console.log(user._id.toString(), '___________', loginUser._id.toString());
       if (user.id === loginUser.id) {
        return next();
       }

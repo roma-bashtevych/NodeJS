@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const util = require('util');
 const { ErrorHandler } = require('../errors');
+const statusCode = require('../config/status');
+const { NOT_VALID_TOKEN } = require('../config/message');
 
 const { ACCESS_SECRET_KEY, REFRESH_SECRET_KEY } = require('../config/var');
 
@@ -23,7 +25,7 @@ module.exports = {
 
       await verifyPromise(token, secretWord);
     } catch (e) {
-      throw new ErrorHandler(401, 'invalid token');
+      throw new ErrorHandler(statusCode.UNAUTHORIZED, NOT_VALID_TOKEN);
     }
   }
 };

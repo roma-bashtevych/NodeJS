@@ -7,5 +7,7 @@ module.exports = {
   INVALID_OPTION: 'Invalid option',
   WRONG: 'Email and password is wrong',
   FORBIDDEN: 'forbidden',
-  UNAUTHORIZED: 'No token'
+  UNAUTHORIZED: 'No token',
+  OK: 'ok',
+  NOT_VALID_TOKEN: 'Not valid token'
 };

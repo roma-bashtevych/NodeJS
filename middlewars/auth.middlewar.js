@@ -3,7 +3,8 @@ const { ErrorHandler } = require('../errors');
 const { authValidator } = require('../validators');
 const {
   EMPTY_LOGIN_PASS,
-  UNAUTHORIZED
+  UNAUTHORIZED,
+  NOT_VALID_TOKEN
 } = require('../config/message');
 const { AUTHORIZATION } = require('../config/var');
 const { verifyToken } = require('../services/jwt.services');
@@ -37,7 +38,7 @@ module.exports = {
       const tokenfromDB = await OAuth.findOne({ access_token }).populate('user');
 
       if (!tokenfromDB) {
-        throw new ErrorHandler(401, 'Not valid token');
+        throw new ErrorHandler(statusCode.UNAUTHORIZED, NOT_VALID_TOKEN);
       }
       req.loginUser = tokenfromDB.user;
       next();
@@ -59,7 +60,7 @@ module.exports = {
       const tokenfromDB = await OAuth.findOne({ refresh_token }).populate('user');
 
       if (!tokenfromDB) {
-        throw new ErrorHandler(401, 'Not valid token');
+        throw new ErrorHandler(statusCode.UNAUTHORIZED, NOT_VALID_TOKEN);
       }
 
       req.loginUser = tokenfromDB.user;
