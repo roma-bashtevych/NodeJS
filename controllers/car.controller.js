@@ -25,7 +25,7 @@ module.exports = {
     try {
       const createdCar = await carService.createCar(req.body);
 
-      res.json(createdCar);
+      res.status(statusCode.OK).json(createdCar);
     } catch (e) {
       next(e);
     }

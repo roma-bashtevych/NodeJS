@@ -1,17 +1,62 @@
-const { passwordServices } = require('../services');
+const { compare } = require('../services/password.services');
+const { jwtServices } = require('../services');
 const { userNormalizator: { userNormalizator } } = require('../utils');
+const { OAuth } = require('../database');
+const { AUTHORIZATION } = require('../config/var');
 
 module.exports = {
-  showUser: async (req, res, next) => {
+  loginUser: async (req, res, next) => {
     try {
-      const { password } = req.body;
-      const { user } = req;
+      const {
+        user,
+        body: { password }
+      } = req;
 
-      await passwordServices.compare(user.password, password);
+      await compare(user.password, password);
 
-      const userForResponce = userNormalizator(user);
+      const tokenPair = jwtServices.generateTokenPair();
+      await OAuth.create({
+        ...tokenPair,
+        user: user._id
+      });
 
-      res.json(userForResponce);
+      res.json({
+        ...tokenPair,
+        user: userNormalizator(user)
+      });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  logoutUser: async (req, res, next) => {
+    try {
+      const access_token = req.get(AUTHORIZATION);
+
+      await OAuth.deleteOne({ access_token });
+      res.json('ok');
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  refresh: async (req, res, next) => {
+    try {
+      const refresh_token = req.get(AUTHORIZATION);
+      const user = req.loginUser;
+
+      await OAuth.deleteOne({ refresh_token });
+
+      const tokenPair = jwtServices.generateTokenPair();
+      await OAuth.create({
+        ...tokenPair,
+        user: user._id
+      });
+
+      res.json({
+        ...tokenPair,
+        user: userNormalizator(user)
+      });
     } catch (e) {
       next(e);
     }

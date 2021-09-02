@@ -1,6 +1,6 @@
 const { User } = require('../database');
 const { ErrorHandler } = require('../errors');
-const { userServices } = require('../services');
+
 const {
   NOT_FOUND,
   INPUT_ALREADY,
@@ -11,37 +11,26 @@ const statusCode = require('../config/status');
 const { userValidator } = require('../validators');
 
 module.exports = {
-  isUserPresent: async (req, res, next) => {
+  isUserNotPresent: (req, res, next) => {
     try {
-      const { user_id } = req.params;
+      const { user } = req;
 
-      const user = await userServices.getUserById(user_id);
       if (!user) {
-        throw new ErrorHandler(statusCode.NOT_FOUND, NOT_FOUND);
+        throw new ErrorHandler(statusCode.CONFLICT, INPUT_ALREADY);
       }
-      req.user = user;
+
       next();
     } catch (e) {
       next(e);
     }
   },
 
-  checkUniqueEmail: async (req, res, next) => {
+  isUserPresent: (req, res, next) => {
     try {
-      const {
-        email,
-        name
-      } = req.body;
+      const { user } = req;
 
-      const userByEmailorName = await userServices.getFindOne({
-        $or: [
-          { email },
-          { name }
-        ]
-      });
-
-      if (userByEmailorName) {
-        throw new ErrorHandler(statusCode.ITEM_ALREADY_EXIST, INPUT_ALREADY);
+      if (user) {
+        throw new ErrorHandler(statusCode.NOT_FOUND, NOT_FOUND);
       }
 
       next();
@@ -55,7 +44,7 @@ module.exports = {
       const { error } = userValidator.createUserValidator.validate(req.body);
 
       if (error) {
-        throw new ErrorHandler(statusCode.NOT_VALID_DATA, error.details[0].message);
+        throw new ErrorHandler(statusCode.BAD_REQUEST, error.details[0].message);
       }
       next();
     } catch (e) {
@@ -68,7 +57,7 @@ module.exports = {
       const { error } = userValidator.updateUserValidator.validate(req.body);
 
       if (error) {
-        throw new ErrorHandler(statusCode.NOT_VALID_DATA, error.details[0].message);
+        throw new ErrorHandler(statusCode.BAD_REQUEST, error.details[0].message);
       }
 
       next();
@@ -82,7 +71,7 @@ module.exports = {
       const { error } = userValidator.queryUserValidator.validate(req.query);
 
       if (error) {
-        throw new ErrorHandler(statusCode.NOT_VALID_DATA, INVALID_OPTION);
+        throw new ErrorHandler(statusCode.BAD_REQUEST, INVALID_OPTION);
       }
 
       next();
@@ -96,7 +85,7 @@ module.exports = {
       const { error } = userValidator.paramsUserValidator.validate(req.params);
 
       if (error) {
-        throw new ErrorHandler(statusCode.NOT_VALID_DATA, INVALID_OPTION);
+        throw new ErrorHandler(statusCode.BAD_REQUEST, INVALID_OPTION);
       }
 
       next();
@@ -107,13 +96,17 @@ module.exports = {
 
   checkUserRole: (roleArr = []) => (req, res, next) => {
     try {
-      const { role } = req.user;
+      const { user, loginUser } = req;
+      console.log(user.id, loginUser.id);
+      if (user.id === loginUser.id) {
+       return next();
+      }
 
       if (!roleArr.length) {
         return next();
       }
 
-      if (!roleArr.includes(role)) {
+      if (!roleArr.includes(loginUser.role)) {
         throw new ErrorHandler(statusCode.FORBIDDEN, FORBIDDEN);
       }
       next();
@@ -127,10 +120,6 @@ module.exports = {
       const value = req[searchIn][paramName];
 
       const user = await User.findOne({ [dbFiled]: value });
-
-      if (!user) {
-        throw new ErrorHandler(statusCode.NOT_FOUND, INVALID_OPTION);
-      }
 
       req.user = user;
 

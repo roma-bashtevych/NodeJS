@@ -27,7 +27,7 @@ module.exports = {
       const { error } = carValidator.createCar.validate(req.body);
 
       if (error) {
-        throw new ErrorHandler(statusCode.NOT_VALID_DATA, error.details[0].message);
+        throw new ErrorHandler(statusCode.BAD_REQUEST, error.details[0].message);
       }
       next();
     } catch (e) {
@@ -40,7 +40,7 @@ module.exports = {
       const { error } = carValidator.updateCar.validate(req.body);
 
       if (error) {
-        throw new ErrorHandler(statusCode.NOT_VALID_DATA, error.details[0].message);
+        throw new ErrorHandler(statusCode.BAD_REQUEST, error.details[0].message);
       }
 
       next();
@@ -54,7 +54,7 @@ module.exports = {
       const { error } = carValidator.paramsCarValidator.validate(req.params);
 
       if (error) {
-        throw new ErrorHandler(statusCode.NOT_VALID_DATA, WRONG);
+        throw new ErrorHandler(statusCode.BAD_REQUEST, WRONG);
       }
       next();
     } catch (e) {
@@ -67,7 +67,7 @@ module.exports = {
       const { error } = carValidator.queryCarValidator.validate(req.query);
 
       if (error) {
-        throw new ErrorHandler(statusCode.NOT_VALID_DATA, NOT_FOUND);
+        throw new ErrorHandler(statusCode.BAD_REQUEST, NOT_FOUND);
       }
       next();
     } catch (e) {

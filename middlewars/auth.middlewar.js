@@ -1,21 +1,22 @@
-const { User } = require('../database');
 const statusCode = require('../config/status');
 const { ErrorHandler } = require('../errors');
 const { authValidator } = require('../validators');
-const { EMPTY_LOGIN_PASS } = require('../config/message');
+const {
+  EMPTY_LOGIN_PASS,
+  UNAUTHORIZED
+} = require('../config/message');
+const { AUTHORIZATION } = require('../config/var');
+const { verifyToken } = require('../services/jwt.services');
+const { OAuth } = require('../database');
 
 module.exports = {
-  isUserEmailPresent: async (req, res, next) => {
+  validateLoginationData: (req, res, next) => {
     try {
-      const { email } = req.body;
+      const { error } = authValidator.authValidator.validate(req.body);
 
-      const userByEmail = await User.findOne({ email });
-
-      if (!userByEmail) {
-        throw new ErrorHandler(statusCode.NOT_VALID_DATA, EMPTY_LOGIN_PASS);
+      if (error) {
+        throw new ErrorHandler(statusCode.BAD_REQUEST, EMPTY_LOGIN_PASS);
       }
-
-      req.user = userByEmail;
 
       next();
     } catch (e) {
@@ -23,17 +24,49 @@ module.exports = {
     }
   },
 
-  validateLoginationData: (req, res, next) => {
+  validateAccessToken: async (req, res, next) => {
     try {
-      const { error } = authValidator.authValidator.validate(req.body);
+      const access_token = req.get(AUTHORIZATION);
 
-      if (error) {
-        throw new ErrorHandler(statusCode.NOT_VALID_DATA, EMPTY_LOGIN_PASS);
+      if (!access_token) {
+        throw new ErrorHandler(statusCode.UNAUTHORIZED, UNAUTHORIZED);
       }
+
+      await verifyToken(access_token);
+
+      const tokenfromDB = await OAuth.findOne({ access_token }).populate('user');
+
+      if (!tokenfromDB) {
+        throw new ErrorHandler(401, 'Not valid token');
+      }
+      req.loginUser = tokenfromDB.user;
+      next();
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  validateRefreshToken: async (req, res, next) => {
+    try {
+      const refresh_token = req.get(AUTHORIZATION);
+
+      if (!refresh_token) {
+        throw new ErrorHandler(statusCode.UNAUTHORIZED, UNAUTHORIZED);
+      }
+
+      await verifyToken(refresh_token, 'refresh');
+
+      const tokenfromDB = await OAuth.findOne({ refresh_token }).populate('user');
+
+      if (!tokenfromDB) {
+        throw new ErrorHandler(401, 'Not valid token');
+      }
+
+      req.loginUser = tokenfromDB.user;
 
       next();
     } catch (e) {
       next(e);
     }
-  }
+  },
 };

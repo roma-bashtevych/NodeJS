@@ -3,11 +3,17 @@ const router = require('express').Router();
 const { authController } = require('../controllers');
 const {
   authMiddlewar: {
-    isUserEmailPresent,
-    validateLoginationData
- }
+    validateLoginationData,
+    validateAccessToken,
+    validateRefreshToken
+ }, userMiddlewar: {
+    isUserNotPresent,
+    getUserByDynamicParam
+  }
 } = require('../middlewars');
 
-router.post('/', validateLoginationData, isUserEmailPresent, authController.showUser);
+router.post('/', validateLoginationData, getUserByDynamicParam('email'), isUserNotPresent, authController.loginUser);
+router.post('/logout', validateAccessToken, authController.logoutUser);
+router.post('/refresh', validateRefreshToken, authController.refresh);
 
 module.exports = router;

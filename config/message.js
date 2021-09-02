@@ -6,5 +6,6 @@ module.exports = {
   EMPTY_LOGIN_PASS: 'login and password aren"t',
   INVALID_OPTION: 'Invalid option',
   WRONG: 'Email and password is wrong',
-  FORBIDDEN: 'forbidden'
+  FORBIDDEN: 'forbidden',
+  UNAUTHORIZED: 'No token'
 };
