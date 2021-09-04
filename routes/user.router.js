@@ -12,6 +12,7 @@ const {
   userMiddlewar: {
     validateUserQuery,
     validateCreateUserBody,
+    validateUpdateUserBody,
     validateUserParams,
     isUserPresent,
     isUserNotPresent,
@@ -26,12 +27,15 @@ router.get('/', validateUserQuery, userController.getAllUsers);
 router.post('/', validateCreateUserBody, getUserByDynamicParam(EMAIL), isUserPresent, userController.createUser);
 router.get('/:user_id', validateUserParams, getUserByDynamicParam(USER_ID, PARAMS, DB_FIELD), userController.getSingleUser);
 router.delete('/:user_id',
+  validateUserParams,
   validateAccessToken,
   getUserByDynamicParam(USER_ID, PARAMS, DB_FIELD),
   isUserNotPresent,
   checkUserRole([userRolesEnum.ADMIN]),
   userController.deleteUser);
 router.patch('/:user_id',
+  validateUserParams,
+  validateUpdateUserBody,
   validateAccessToken,
   getUserByDynamicParam(USER_ID, PARAMS, DB_FIELD),
   isUserNotPresent,
