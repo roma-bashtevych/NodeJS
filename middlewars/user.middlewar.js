@@ -1,14 +1,13 @@
 const { User } = require('../database');
 const { ErrorHandler } = require('../errors');
-
-const {
-  NOT_FOUND,
-  INPUT_ALREADY,
-  INVALID_OPTION,
-  FORBIDDEN
-} = require('../config/message');
-const statusCode = require('../config/status');
 const { userValidator } = require('../validators');
+const {
+  CONSTANTS: { BODY },
+  MESSAGES: {
+    NOT_FOUND, INPUT_ALREADY, INVALID_OPTION, FORBIDDEN
+  },
+  statusCode
+} = require('../config');
 
 module.exports = {
   isUserNotPresent: (req, res, next) => {
@@ -96,10 +95,10 @@ module.exports = {
 
   checkUserRole: (roleArr = []) => (req, res, next) => {
     try {
-      const { user, loginUser } = req;
-      console.log(user._id.toString(), '___________', loginUser._id.toString());
+      const { loginUser, user } = req;
+
       if (user.id === loginUser.id) {
-       return next();
+        return next();
       }
 
       if (!roleArr.length) {
@@ -115,7 +114,7 @@ module.exports = {
     }
   },
 
-  getUserByDynamicParam: (paramName, searchIn = 'body', dbFiled = paramName) => async (req, res, next) => {
+  getUserByDynamicParam: (paramName, searchIn = BODY, dbFiled = paramName) => async (req, res, next) => {
     try {
       const value = req[searchIn][paramName];
 
@@ -127,5 +126,19 @@ module.exports = {
     } catch (e) {
       next(e);
     }
-  }
+  },
+
+  checkUser: (req, res, next) => {
+    try {
+      const { loginUser, user } = req;
+
+      if (loginUser.id !== user.id) {
+        throw new ErrorHandler(statusCode.FORBIDDEN, FORBIDDEN);
+      }
+
+      next();
+    } catch (e) {
+      next(e);
+    }
+  },
 };

@@ -2,8 +2,7 @@ const { compare } = require('../services/password.services');
 const { jwtServices } = require('../services');
 const { userNormalizator: { userNormalizator } } = require('../utils');
 const { OAuth } = require('../database');
-const { AUTHORIZATION } = require('../config/var');
-const { OK } = require('../config/message');
+const { VAR: { AUTHORIZATION }, MESSAGES: { OK }, statusCode } = require('../config');
 
 module.exports = {
   loginUser: async (req, res, next) => {
@@ -21,7 +20,7 @@ module.exports = {
         user: user._id
       });
 
-      res.json({
+      res.status(statusCode.UPDATE_AND_CREATE).json({
         ...tokenPair,
         user: userNormalizator(user)
       });
@@ -35,7 +34,7 @@ module.exports = {
       const access_token = req.get(AUTHORIZATION);
 
       await OAuth.deleteOne({ access_token });
-      res.json(OK);
+      res.status(statusCode.DELETED).json(OK);
     } catch (e) {
       next(e);
     }
@@ -54,7 +53,7 @@ module.exports = {
         user: user._id
       });
 
-      res.json({
+      res.status(statusCode.UPDATE_AND_CREATE).json({
         ...tokenPair,
         user: userNormalizator(user)
       });

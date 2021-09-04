@@ -1,5 +1,6 @@
 const Joi = require('joi');
-const { CURRENT_YEAR } = require('../config/constants');
+
+const { CONSTANTS: { CURRENT_YEAR } } = require('../config');
 
 const createCar = Joi.object({
   model: Joi.string()

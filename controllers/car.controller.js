@@ -1,6 +1,5 @@
 const carService = require('../services/car.services');
-const { DELETED_MESSAGE, UPDATE_MESSAGE } = require('../config/message');
-const statusCode = require('../config/status');
+const { MESSAGES: { DELETED_MESSAGE, UPDATE_MESSAGE }, statusCode } = require('../config');
 
 module.exports = {
   getSingleCar: (req, res, next) => {

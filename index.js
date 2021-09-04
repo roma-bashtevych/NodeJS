@@ -3,9 +3,7 @@ const mongoose = require('mongoose');
 
 require('dotenv').config();
 
-const { PORT, DATABASE_URL } = require('./config/var');
-const { NOT_FOUND } = require('./config/message');
-const statusCode = require('./config/status');
+const { VAR: { PORT, DATABASE_URL }, MESSAGES: { NOT_FOUND }, statusCode } = require('./config');
 
 const app = express();
 

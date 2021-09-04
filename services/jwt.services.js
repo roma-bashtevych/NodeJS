@@ -1,12 +1,14 @@
 const jwt = require('jsonwebtoken');
 const util = require('util');
-const { ErrorHandler } = require('../errors');
-const statusCode = require('../config/status');
-const { NOT_VALID_TOKEN } = require('../config/message');
-
-const { ACCESS_SECRET_KEY, REFRESH_SECRET_KEY } = require('../config/var');
 
 const verifyPromise = util.promisify(jwt.verify);
+
+const { ErrorHandler } = require('../errors');
+const {
+  statusCode, MESSAGES: { NOT_VALID_TOKEN },
+  VAR: { ACCESS_SECRET_KEY, REFRESH_SECRET_KEY },
+  CONSTANTS: { ACCESS }
+} = require('../config');
 
 module.exports = {
   generateTokenPair: () => {
@@ -19,9 +21,9 @@ module.exports = {
     };
   },
 
-  verifyToken: async (token, tokenType = 'access') => {
+  verifyToken: async (token, tokenType = ACCESS) => {
     try {
-      const secretWord = tokenType === 'access' ? ACCESS_SECRET_KEY : REFRESH_SECRET_KEY;
+      const secretWord = tokenType === ACCESS ? ACCESS_SECRET_KEY : REFRESH_SECRET_KEY;
 
       await verifyPromise(token, secretWord);
     } catch (e) {

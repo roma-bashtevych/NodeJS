@@ -1,8 +1,7 @@
 const { userServices } = require('../services');
-const { DELETED_MESSAGE, UPDATE_MESSAGE } = require('../config/message');
 const { userNormalizator: { userNormalizator } } = require('../utils');
-const statusCode = require('../config/status');
 const passwordServices = require('../services/password.services');
+const { MESSAGES: { DELETED_MESSAGE, UPDATE_MESSAGE }, statusCode } = require('../config');
 
 module.exports = {
   getSingleUser: (req, res, next) => {

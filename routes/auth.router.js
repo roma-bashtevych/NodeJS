@@ -1,5 +1,7 @@
 const router = require('express').Router();
 
+const { CONSTANTS: { EMAIL } } = require('../config');
+
 const { authController } = require('../controllers');
 const {
   authMiddlewar: {
@@ -12,7 +14,7 @@ const {
   }
 } = require('../middlewars');
 
-router.post('/', validateLoginationData, getUserByDynamicParam('email'), isUserNotPresent, authController.loginUser);
+router.post('/', validateLoginationData, getUserByDynamicParam(EMAIL), isUserNotPresent, authController.loginUser);
 router.post('/logout', validateAccessToken, authController.logoutUser);
 router.post('/refresh', validateRefreshToken, authController.refresh);
 

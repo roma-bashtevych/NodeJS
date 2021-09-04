@@ -1,27 +1,9 @@
 const { ErrorHandler } = require('../errors');
-const { carServices } = require('../services');
-const { NOT_FOUND, WRONG, INVALID_OPTION } = require('../config/message');
-const statusCode = require('../config/status');
 const { carValidator } = require('../validators');
 const { Car } = require('../database');
+const { MESSAGES: { NOT_FOUND, WRONG, INVALID_OPTION }, CONSTANTS: { BODY }, statusCode } = require('../config');
 
 module.exports = {
-  isCarPresent: async (req, res, next) => {
-    try {
-      const { car_id } = req.params;
-
-      const car = await carServices.getCarById(car_id);
-      if (!car) {
-        throw new ErrorHandler(statusCode.NOT_FOUND, NOT_FOUND);
-      }
-
-      req.car = car;
-      next();
-    } catch (e) {
-      next(e);
-    }
-  },
-
   validateCreateCar: (req, res, next) => {
     try {
       const { error } = carValidator.createCar.validate(req.body);
@@ -75,7 +57,7 @@ module.exports = {
     }
   },
 
-  getCarByDynamicParam: (paramName, searchIn = 'body', dbFiled = paramName) => async (req, res, next) => {
+  getCarByDynamicParam: (paramName, searchIn = BODY, dbFiled = paramName) => async (req, res, next) => {
     try {
       const value = req[searchIn][paramName];
 

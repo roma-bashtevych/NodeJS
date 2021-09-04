@@ -1,6 +1,11 @@
 const router = require('express').Router();
-const { ADMIN } = require('../config/user.roles.enum');
-const { USER_ID, PARAMS, DB_FIELD } = require('../config/constants');
+
+const {
+  userRolesEnum,
+  CONSTANTS: {
+    USER_ID, PARAMS, DB_FIELD, EMAIL
+  }
+} = require('../config');
 
 const { userController } = require('../controllers');
 const {
@@ -12,24 +17,25 @@ const {
     isUserNotPresent,
     getUserByDynamicParam,
     checkUserRole,
+    checkUser
   },
   authMiddlewar: { validateAccessToken }
 } = require('../middlewars');
 
 router.get('/', validateUserQuery, userController.getAllUsers);
-router.post('/', validateCreateUserBody, getUserByDynamicParam('email'), isUserPresent, userController.createUser);
+router.post('/', validateCreateUserBody, getUserByDynamicParam(EMAIL), isUserPresent, userController.createUser);
 router.get('/:user_id', validateUserParams, getUserByDynamicParam(USER_ID, PARAMS, DB_FIELD), userController.getSingleUser);
 router.delete('/:user_id',
   validateAccessToken,
   getUserByDynamicParam(USER_ID, PARAMS, DB_FIELD),
   isUserNotPresent,
-  checkUserRole([ADMIN]),
+  checkUserRole([userRolesEnum.ADMIN]),
   userController.deleteUser);
 router.patch('/:user_id',
   validateAccessToken,
   getUserByDynamicParam(USER_ID, PARAMS, DB_FIELD),
   isUserNotPresent,
-  checkUserRole([' ']),
+  checkUser,
   userController.updateUser);
 
 module.exports = router;

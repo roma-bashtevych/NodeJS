@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-const { USER, OAUTH } = require('../config/database-tables.enum');
+const { DATABASE_TABLES: { USER, OAUTH } } = require('../config');
 
 const OAuthSchema = new Schema({
   access_token: {

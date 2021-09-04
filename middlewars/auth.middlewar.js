@@ -1,14 +1,14 @@
-const statusCode = require('../config/status');
 const { ErrorHandler } = require('../errors');
 const { authValidator } = require('../validators');
-const {
-  EMPTY_LOGIN_PASS,
-  UNAUTHORIZED,
-  NOT_VALID_TOKEN
-} = require('../config/message');
-const { AUTHORIZATION } = require('../config/var');
 const { verifyToken } = require('../services/jwt.services');
 const { OAuth } = require('../database');
+const {
+  statusCode,
+  MESSAGES: { EMPTY_LOGIN_PASS, UNAUTHORIZED, NOT_VALID_TOKEN },
+  VAR: { AUTHORIZATION },
+  DATABASE_TABLES: { USER },
+  CONSTANTS: { REFRESH }
+} = require('../config');
 
 module.exports = {
   validateLoginationData: (req, res, next) => {
@@ -35,7 +35,7 @@ module.exports = {
 
       await verifyToken(access_token);
 
-      const tokenfromDB = await OAuth.findOne({ access_token }).populate('user');
+      const tokenfromDB = await OAuth.findOne({ access_token }).populate(USER);
 
       if (!tokenfromDB) {
         throw new ErrorHandler(statusCode.UNAUTHORIZED, NOT_VALID_TOKEN);
@@ -55,9 +55,9 @@ module.exports = {
         throw new ErrorHandler(statusCode.UNAUTHORIZED, UNAUTHORIZED);
       }
 
-      await verifyToken(refresh_token, 'refresh');
+      await verifyToken(refresh_token, REFRESH);
 
-      const tokenfromDB = await OAuth.findOne({ refresh_token }).populate('user');
+      const tokenfromDB = await OAuth.findOne({ refresh_token }).populate(USER);
 
       if (!tokenfromDB) {
         throw new ErrorHandler(statusCode.UNAUTHORIZED, NOT_VALID_TOKEN);

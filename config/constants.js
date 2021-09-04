@@ -3,6 +3,11 @@ module.exports = {
   PASSWORD_REGEXP: new RegExp(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/),
   CURRENT_YEAR: new Date().getFullYear(),
   USER_ID: 'user_id',
+  CAR_ID: 'car_id',
+  EMAIL: 'email',
   PARAMS: 'params',
-  DB_FIELD: '_id'
+  DB_FIELD: '_id',
+  REFRESH: 'refresh',
+  ACCESS: 'access',
+  BODY: 'body'
 };
