@@ -40,6 +40,7 @@ module.exports = {
       if (!tokenfromDB) {
         throw new ErrorHandler(statusCode.UNAUTHORIZED, NOT_VALID_TOKEN);
       }
+
       req.loginUser = tokenfromDB.user;
       next();
     } catch (e) {

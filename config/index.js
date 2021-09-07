@@ -4,5 +4,6 @@ module.exports = {
   MESSAGES: require('./message'),
   statusCode: require('./status'),
   userRolesEnum: require('./user.roles.enum'),
-  VAR: require('./var')
+  VAR: require('./var'),
+  emailActionsEnum: require('./email-actions.enum')
 };

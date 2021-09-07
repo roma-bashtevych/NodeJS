@@ -1,7 +1,6 @@
-const { userServices } = require('../services');
+const { userServices, passwordServices, emailServices } = require('../services');
 const { userNormalizator: { userNormalizator } } = require('../utils');
-const passwordServices = require('../services/password.services');
-const { MESSAGES: { DELETED_MESSAGE, UPDATE_MESSAGE }, statusCode } = require('../config');
+const { MESSAGES: { DELETED_MESSAGE, UPDATE_MESSAGE }, statusCode, emailActionsEnum } = require('../config');
 
 module.exports = {
   getSingleUser: (req, res, next) => {
@@ -34,7 +33,7 @@ module.exports = {
 
       const createdUser = await userServices.createUser({ ...req.body, password: hashedPassword });
       const userToReturn = userNormalizator(createdUser);
-
+      await emailServices.sendMail(userToReturn.email, emailActionsEnum.WELCOME, { userName: userToReturn.name });
       res.status(statusCode.OK).json(userToReturn);
     } catch (e) {
       next(e);
@@ -44,6 +43,11 @@ module.exports = {
   deleteUser: async (req, res, next) => {
     try {
       const { user_id } = req.params;
+      if (req.delete === 'user delete') {
+        await emailServices.sendMail(req.user.email, emailActionsEnum.DELETE_USER, { userName: req.user.name });
+      } else {
+        await emailServices.sendMail(req.user.email, emailActionsEnum.DELETE_ADMIN, { userName: req.user.name });
+      }
 
       await userServices.deleteUser({ _id: user_id });
       res.status(statusCode.DELETED).json(DELETED_MESSAGE);
@@ -58,6 +62,7 @@ module.exports = {
 
       await userServices.updateUserById({ _id: user_id }, req.body);
 
+      await emailServices.sendMail(req.user.email, emailActionsEnum.UPDATE, { userName: req.user.name });
       res.status(statusCode.UPDATE_AND_CREATE).json(UPDATE_MESSAGE);
     } catch (e) {
       next(e);
