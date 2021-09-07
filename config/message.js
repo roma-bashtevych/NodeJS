@@ -9,5 +9,6 @@ module.exports = {
   FORBIDDEN: 'forbidden',
   UNAUTHORIZED: 'No token',
   OK: 'ok',
-  NOT_VALID_TOKEN: 'Not valid token'
+  NOT_VALID_TOKEN: 'Not valid token',
+  TEMPLATE: 'wrong template name'
 };

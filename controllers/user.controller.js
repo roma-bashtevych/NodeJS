@@ -1,6 +1,8 @@
 const { userServices, passwordServices, emailServices } = require('../services');
 const { userNormalizator: { userNormalizator } } = require('../utils');
-const { MESSAGES: { DELETED_MESSAGE, UPDATE_MESSAGE }, statusCode, emailActionsEnum } = require('../config');
+const {
+  MESSAGES: { DELETED_MESSAGE, UPDATE_MESSAGE }, statusCode, emailActionsEnum, userRolesEnum
+} = require('../config');
 
 module.exports = {
   getSingleUser: (req, res, next) => {
@@ -43,10 +45,12 @@ module.exports = {
   deleteUser: async (req, res, next) => {
     try {
       const { user_id } = req.params;
-      if (req.delete === 'user delete') {
-        await emailServices.sendMail(req.user.email, emailActionsEnum.DELETE_USER, { userName: req.user.name });
-      } else {
+      if (req.user.role === userRolesEnum.ADMIN) {
+        console.log('delete admin');
         await emailServices.sendMail(req.user.email, emailActionsEnum.DELETE_ADMIN, { userName: req.user.name });
+      } else {
+        await emailServices.sendMail(req.user.email, emailActionsEnum.DELETE_USER, { userName: req.user.name });
+        console.log('delete user');
       }
 
       await userServices.deleteUser({ _id: user_id });

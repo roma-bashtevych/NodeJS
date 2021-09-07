@@ -98,7 +98,6 @@ module.exports = {
       const { loginUser, user } = req;
 
       if (user.id === loginUser.id) {
-        req.delete = 'user delete';
         return next();
       }
 
