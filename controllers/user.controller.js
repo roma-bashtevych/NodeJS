@@ -46,11 +46,9 @@ module.exports = {
     try {
       const { user_id } = req.params;
       if (req.user.role === userRolesEnum.ADMIN) {
-        console.log('delete admin');
         await emailServices.sendMail(req.user.email, emailActionsEnum.DELETE_ADMIN, { userName: req.user.name });
       } else {
         await emailServices.sendMail(req.user.email, emailActionsEnum.DELETE_USER, { userName: req.user.name });
-        console.log('delete user');
       }
 
       await userServices.deleteUser({ _id: user_id });
