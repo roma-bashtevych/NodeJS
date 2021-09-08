@@ -50,9 +50,16 @@ const paramsUserValidator = Joi.object({
     .trim()
 });
 
+const updateForgotValidator = Joi.object({
+  password: Joi.string()
+    .regex(PASSWORD_REGEXP)
+    .required()
+});
+
 module.exports = {
   queryUserValidator,
   createUserValidator,
   updateUserValidator,
-  paramsUserValidator
+  paramsUserValidator,
+  updateForgotValidator
 };

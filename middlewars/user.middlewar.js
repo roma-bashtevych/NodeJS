@@ -141,4 +141,18 @@ module.exports = {
       next(e);
     }
   },
+
+  validForgotPass: (req, res, next) => {
+    try {
+      const { error } = userValidator.updateForgotValidator.validate(req.body);
+
+      if (error) {
+        throw new ErrorHandler(statusCode.FORBIDDEN, error.details[0].message);
+      }
+
+      next();
+    } catch (e) {
+      next(e);
+    }
+  }
 };

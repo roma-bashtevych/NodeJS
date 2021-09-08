@@ -1,7 +1,9 @@
 const { compare } = require('../services/password.services');
-const { jwtServices, emailServices } = require('../services');
+const {
+  jwtServices, emailServices, passwordServices, userServices
+} = require('../services');
 const { userNormalizator: { userNormalizator } } = require('../utils');
-const { OAuth } = require('../database');
+const { OAuth, Forgot_Token } = require('../database');
 const {
   VAR: { AUTHORIZATION },
   MESSAGES: { OK },
@@ -66,5 +68,49 @@ module.exports = {
     } catch (e) {
       next(e);
     }
-  }
+  },
+
+  forgot: async (req, res, next) => {
+    try {
+      const { user } = req;
+
+      const token = jwtServices.generateForgotToken();
+
+      const newToken = token.forgot_token;
+      await Forgot_Token.create({
+        ...token,
+        user
+      });
+
+      await emailServices.sendMail(user.email, emailActionsEnum.FORGOT,
+        { userName: user.name, token: newToken });
+
+      res.status(statusCode.UPDATE_AND_CREATE).json({
+        ...token,
+        user: userNormalizator(user)
+      });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  newPassword: async (req, res, next) => {
+    try {
+      const { loginUser, body: { password } } = req;
+
+      const hashedPassword = await passwordServices.hash(password);
+
+      await userServices.updateUserById({ password: hashedPassword });
+
+      await emailServices.sendMail(loginUser.email, emailActionsEnum.WELCOME, { userName: loginUser.name });
+
+      await Forgot_Token.deleteOne({ user: loginUser.id });
+
+      await OAuth.deleteMany({ user: loginUser.id });
+
+      res.status(statusCode.UPDATE_AND_CREATE).json(OK);
+    } catch (e) {
+      next(e);
+    }
+  },
 };

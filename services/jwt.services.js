@@ -6,7 +6,7 @@ const verifyPromise = util.promisify(jwt.verify);
 const { ErrorHandler } = require('../errors');
 const {
   statusCode, MESSAGES: { NOT_VALID_TOKEN },
-  VAR: { ACCESS_SECRET_KEY, REFRESH_SECRET_KEY },
+  VAR: { ACCESS_SECRET_KEY, REFRESH_SECRET_KEY, FORGOT_SECRET_KEY },
   CONSTANTS: { ACCESS }
 } = require('../config');
 
@@ -19,6 +19,22 @@ module.exports = {
       access_token,
       refresh_token
     };
+  },
+
+  generateForgotToken: () => {
+    const forgot_token = jwt.sign({}, FORGOT_SECRET_KEY, { expiresIn: '30m' });
+
+    return {
+      forgot_token,
+    };
+  },
+
+  verifyForgotToken: async (token) => {
+    try {
+      await jwt.verify(token, FORGOT_SECRET_KEY);
+    } catch (e) {
+      throw new ErrorHandler(statusCode.UNAUTHORIZED, NOT_VALID_TOKEN);
+    }
   },
 
   verifyToken: async (token, tokenType = ACCESS) => {
