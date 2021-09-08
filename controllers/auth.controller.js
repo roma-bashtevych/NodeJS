@@ -85,10 +85,7 @@ module.exports = {
       await emailServices.sendMail(user.email, emailActionsEnum.FORGOT,
         { userName: user.name, token: newToken });
 
-      res.status(statusCode.UPDATE_AND_CREATE).json({
-        ...token,
-        user: userNormalizator(user)
-      });
+      res.status(statusCode.UPDATE_AND_CREATE).json(OK);
     } catch (e) {
       next(e);
     }
@@ -100,7 +97,7 @@ module.exports = {
 
       const hashedPassword = await passwordServices.hash(password);
 
-      await userServices.updateUserById({ password: hashedPassword });
+      await userServices.updateUser({ password: hashedPassword });
 
       await emailServices.sendMail(loginUser.email, emailActionsEnum.WELCOME, { userName: loginUser.name });
 

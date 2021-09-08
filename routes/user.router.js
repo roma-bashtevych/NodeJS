@@ -3,17 +3,15 @@ const router = require('express').Router();
 const {
   userRolesEnum,
   CONSTANTS: {
-    USER_ID, PARAMS, DB_FIELD, EMAIL
+    USER_ID, PARAMS, DB_FIELD, EMAIL, BODY, QUERY
   }
 } = require('../config');
+const { userValidator } = require('../validators');
 
 const { userController } = require('../controllers');
 const {
   userMiddlewar: {
-    validateUserQuery,
-    validateCreateUserBody,
-    validateUpdateUserBody,
-    validateUserParams,
+    validateDataDynamic,
     isUserPresent,
     isUserNotPresent,
     getUserByDynamicParam,
@@ -23,19 +21,24 @@ const {
   authMiddlewar: { validateAccessToken }
 } = require('../middlewars');
 
-router.get('/', validateUserQuery, userController.getAllUsers);
-router.post('/', validateCreateUserBody, getUserByDynamicParam(EMAIL), isUserPresent, userController.createUser);
-router.get('/:user_id', validateUserParams, getUserByDynamicParam(USER_ID, PARAMS, DB_FIELD), userController.getSingleUser);
+router.get('/', validateDataDynamic(userValidator.queryUserValidator, QUERY), userController.getAllUsers);
+router.post('/', validateDataDynamic(userValidator.createUserValidator, BODY),
+  getUserByDynamicParam(EMAIL),
+  isUserPresent,
+  userController.createUser);
+router.get('/:user_id', validateDataDynamic(userValidator.paramsUserValidator, PARAMS),
+  getUserByDynamicParam(USER_ID, PARAMS, DB_FIELD),
+  userController.getSingleUser);
 router.delete('/:user_id',
-  validateUserParams,
+  validateDataDynamic(userValidator.paramsUserValidator, PARAMS),
   validateAccessToken,
   getUserByDynamicParam(USER_ID, PARAMS, DB_FIELD),
   isUserNotPresent,
   checkUserRole([userRolesEnum.ADMIN]),
   userController.deleteUser);
 router.patch('/:user_id',
-  validateUpdateUserBody,
-  validateUserParams,
+  validateDataDynamic(userValidator.updateUserValidator, BODY),
+  validateDataDynamic(userValidator.paramsUserValidator, PARAMS),
   validateAccessToken,
   getUserByDynamicParam(USER_ID, PARAMS, DB_FIELD),
   isUserNotPresent,

@@ -9,5 +9,6 @@ module.exports = {
   DB_FIELD: '_id',
   REFRESH: 'refresh',
   ACCESS: 'access',
-  BODY: 'body'
+  BODY: 'body',
+  QUERY: 'query'
 };

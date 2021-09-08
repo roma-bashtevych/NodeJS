@@ -1,6 +1,7 @@
 const router = require('express').Router();
 
 const { CONSTANTS: { EMAIL } } = require('../config');
+const { authValidator } = require('../validators');
 
 const { authController } = require('../controllers');
 const {
@@ -9,7 +10,8 @@ const {
     validateAccessToken,
     validateRefreshToken,
     validateForgotToken
- }, userMiddlewar: {
+  }, userMiddlewar: {
+    validateDataDynamic,
     isUserNotPresent,
     getUserByDynamicParam,
     validForgotPass
@@ -20,6 +22,9 @@ router.post('/', validateLoginationData, getUserByDynamicParam(EMAIL), isUserNot
 router.post('/logout', validateAccessToken, authController.logoutUser);
 router.post('/refresh', validateRefreshToken, authController.refresh);
 router.post('/forgot', getUserByDynamicParam(EMAIL), isUserNotPresent, authController.forgot);
-router.patch('/forgot', validateForgotToken, validForgotPass, authController.newPassword);
+router.patch('/forgot', validateDataDynamic(authValidator.authValidator),
+  validateForgotToken,
+  validForgotPass,
+  authController.newPassword);
 
 module.exports = router;

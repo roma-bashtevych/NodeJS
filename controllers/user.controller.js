@@ -1,7 +1,7 @@
 const { userServices, passwordServices, emailServices } = require('../services');
 const { userNormalizator: { userNormalizator } } = require('../utils');
 const {
-  MESSAGES: { DELETED_MESSAGE, UPDATE_MESSAGE }, statusCode, emailActionsEnum, userRolesEnum
+  MESSAGES: { UPDATE_MESSAGE }, statusCode, emailActionsEnum, userRolesEnum
 } = require('../config');
 
 module.exports = {
@@ -52,7 +52,7 @@ module.exports = {
       }
 
       await userServices.deleteUser({ _id: user_id });
-      res.status(statusCode.DELETED).json(DELETED_MESSAGE);
+      res.sendStatus(statusCode.DELETED);
     } catch (e) {
       next(e);
     }

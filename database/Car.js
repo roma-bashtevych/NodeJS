@@ -1,5 +1,7 @@
 const { Schema, model } = require('mongoose');
 
+const { DATABASE_TABLES: { CAR } } = require('../config');
+
 const carSchema = new Schema({
   model: {
     type: String,
@@ -14,4 +16,4 @@ const carSchema = new Schema({
   }
 });
 
-module.exports = model('car', carSchema);
+module.exports = model(CAR, carSchema);

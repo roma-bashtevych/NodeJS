@@ -4,7 +4,7 @@ const { userValidator } = require('../validators');
 const {
   CONSTANTS: { BODY },
   MESSAGES: {
-    NOT_FOUND, INPUT_ALREADY, INVALID_OPTION, FORBIDDEN
+    NOT_FOUND, INPUT_ALREADY, FORBIDDEN
   },
   statusCode
 } = require('../config');
@@ -30,61 +30,6 @@ module.exports = {
 
       if (user) {
         throw new ErrorHandler(statusCode.NOT_FOUND, NOT_FOUND);
-      }
-
-      next();
-    } catch (e) {
-      next(e);
-    }
-  },
-
-  validateCreateUserBody: (req, res, next) => {
-    try {
-      const { error } = userValidator.createUserValidator.validate(req.body);
-
-      if (error) {
-        throw new ErrorHandler(statusCode.BAD_REQUEST, error.details[0].message);
-      }
-      next();
-    } catch (e) {
-      next(e);
-    }
-  },
-
-  validateUpdateUserBody: (req, res, next) => {
-    try {
-      const { error } = userValidator.updateUserValidator.validate(req.body);
-
-      if (error) {
-        throw new ErrorHandler(statusCode.BAD_REQUEST, error.details[0].message);
-      }
-
-      next();
-    } catch (e) {
-      next(e);
-    }
-  },
-
-  validateUserQuery: (req, res, next) => {
-    try {
-      const { error } = userValidator.queryUserValidator.validate(req.query);
-
-      if (error) {
-        throw new ErrorHandler(statusCode.BAD_REQUEST, INVALID_OPTION);
-      }
-
-      next();
-    } catch (e) {
-      next(e);
-    }
-  },
-
-  validateUserParams: (req, res, next) => {
-    try {
-      const { error } = userValidator.paramsUserValidator.validate(req.params);
-
-      if (error) {
-        throw new ErrorHandler(statusCode.BAD_REQUEST, INVALID_OPTION);
       }
 
       next();
@@ -148,6 +93,20 @@ module.exports = {
 
       if (error) {
         throw new ErrorHandler(statusCode.FORBIDDEN, error.details[0].message);
+      }
+
+      next();
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  validateDataDynamic: (validator, data = BODY) => (req, res, next) => {
+    try {
+      const { error } = [validator].validate(req[data]);
+
+      if (error) {
+        throw new ErrorHandler(statusCode.BAD_REQUEST, error.details[0].message);
       }
 
       next();
