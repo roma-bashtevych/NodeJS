@@ -53,7 +53,7 @@ module.exports = {
         user: userToReturn
       });
 
-      await emailServices.sendMail('oleg.duda.mail@gmail.com', emailActionsEnum.WELCOME,
+      await emailServices.sendMail(userToReturn.email, emailActionsEnum.WELCOME,
         { userName: userToReturn.name, forgotPasswordURL: `${FRONTEND_URL}/password?token=${newActionToken}` });
       res.status(statusCode.OK).json(userToReturn);
     } catch (e) {
