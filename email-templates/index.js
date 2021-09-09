@@ -31,6 +31,6 @@ module.exports = {
   },
   [emailActionsEnum.ADMIN]: {
     templateName: 'admin',
-    subject: 'Welcome you are admin now'
+    subject: 'Welcome you are admin now '
   }
 };
