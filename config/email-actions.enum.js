@@ -5,5 +5,6 @@ module.exports = {
   DELETE_ADMIN: 'delete admin',
   AUTH: 'auth',
   ACTION: 'action',
-  CHANGE: 'change'
+  CHANGE: 'change',
+  ADMIN: 'admin'
 };

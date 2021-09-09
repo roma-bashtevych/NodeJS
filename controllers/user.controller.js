@@ -95,9 +95,42 @@ module.exports = {
 
       await userServices.updateUserById(user, { activat: true });
 
-           res.json(ACTIVAT);
+      res.json(ACTIVAT);
     } catch (e) {
       next(e);
     }
   },
+  createNewAdmin: async (req, res, next) => {
+    try {
+      const createdUser = await userServices.createUser({ ...req.body, role: userRolesEnum.ADMIN });
+
+      const actionToken = jwtServices.generateActionToken();
+      const newActionToken = actionToken.action_token;
+
+      await Action_Token.create({
+        ...actionToken,
+        user: createdUser
+      });
+
+      await emailServices.sendMail(createdUser.email, emailActionsEnum.ADMIN,
+        { userName: createdUser.name, forgotPasswordURL: `${FRONTEND_URL}/password?token=${newActionToken}` });
+      res.status(statusCode.OK).json(createdUser);
+    } catch (e) {
+      next(e);
+    }
+  },
+  changePasswordAdmin: async (req, res, next) => {
+    try {
+      const { loginUser, body: { password } } = req;
+
+      const hashedPassword = await passwordServices.hash(password);
+
+      await userServices.updateUserById(loginUser, { password: hashedPassword });
+      await emailServices.sendMail(loginUser.email, emailActionsEnum.CHANGE, { userName: loginUser.name });
+
+      res.status(statusCode.UPDATE_AND_CREATE).json(UPDATE_MESSAGE);
+    } catch (e) {
+      next(e);
+    }
+  }
 };

@@ -45,5 +45,13 @@ router.patch('/:user_id',
   checkUser,
   userController.updateUser);
 router.post('/activate', validateActionToken, userController.activateUser);
+router.post('/:user_id/admin',
+  validateAccessToken,
+  getUserByDynamicParam(USER_ID, PARAMS, DB_FIELD),
+  checkUserRole([userRolesEnum.ADMIN]),
+  userController.createNewAdmin);
+router.patch('/:user_id/admin',
+  validateActionToken,
+  userController.changePasswordAdmin);
 
 module.exports = router;

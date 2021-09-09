@@ -53,6 +53,7 @@ module.exports = {
       if (!roleArr.includes(loginUser.role)) {
         throw new ErrorHandler(statusCode.FORBIDDEN, FORBIDDEN);
       }
+
       next();
     } catch (e) {
       next(e);
@@ -66,7 +67,6 @@ module.exports = {
       const user = await User.findOne({ [dbFiled]: value });
 
       req.user = user;
-
       next();
     } catch (e) {
       next(e);

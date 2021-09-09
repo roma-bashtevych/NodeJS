@@ -28,5 +28,9 @@ module.exports = {
   [emailActionsEnum.CHANGE]: {
     templateName: 'changePassword',
     subject: 'Your password was changed'
+  },
+  [emailActionsEnum.ADMIN]: {
+    templateName: 'admin',
+    subject: 'Welcome you are admin now'
   }
 };
