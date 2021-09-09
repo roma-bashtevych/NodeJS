@@ -10,5 +10,6 @@ module.exports = {
   UNAUTHORIZED: 'No token',
   OK: 'ok',
   NOT_VALID_TOKEN: 'Not valid token',
-  TEMPLATE: 'wrong template name'
+  TEMPLATE: 'wrong template name',
+  ACTIVAT: 'Acount activated'
 };

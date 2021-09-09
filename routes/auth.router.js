@@ -9,7 +9,7 @@ const {
     validateLoginationData,
     validateAccessToken,
     validateRefreshToken,
-    validateForgotToken
+    validateActionToken
   }, userMiddlewar: {
     validateDataDynamic,
     isUserNotPresent,
@@ -23,7 +23,7 @@ router.post('/logout', validateAccessToken, authController.logoutUser);
 router.post('/refresh', validateRefreshToken, authController.refresh);
 router.post('/forgot', getUserByDynamicParam(EMAIL), isUserNotPresent, authController.forgot);
 router.patch('/forgot', validateDataDynamic(authValidator.authValidator),
-  validateForgotToken,
+  validateActionToken,
   validForgotPass,
   authController.newPassword);
 router.patch('/change', validateDataDynamic(authValidator.authChangePassValidator),

@@ -1,7 +1,7 @@
 const { ErrorHandler } = require('../errors');
 const { authValidator } = require('../validators');
-const { verifyToken, verifyForgotToken } = require('../services/jwt.services');
-const { OAuth, Forgot_Token } = require('../database');
+const { verifyToken, verifyActionToken } = require('../services/jwt.services');
+const { OAuth, Action_Token } = require('../database');
 const {
   statusCode,
   MESSAGES: { EMPTY_LOGIN_PASS, UNAUTHORIZED, NOT_VALID_TOKEN },
@@ -72,17 +72,17 @@ module.exports = {
     }
   },
 
-  validateForgotToken: async (req, res, next) => {
+  validateActionToken: async (req, res, next) => {
     try {
-      const forgot_token = req.get(AUTHORIZATION);
+      const action_token = req.get(AUTHORIZATION);
 
-      if (!forgot_token) {
+      if (!action_token) {
         throw new ErrorHandler(statusCode.UNAUTHORIZED, UNAUTHORIZED);
       }
 
-      await verifyForgotToken(forgot_token);
+      await verifyActionToken(action_token);
 
-      const tokenfromDB = await Forgot_Token.findOne({ forgot_token }).populate(USER);
+      const tokenfromDB = await Action_Token.findOne({ action_token }).populate(USER);
 
       if (!tokenfromDB) {
         throw new ErrorHandler(statusCode.UNAUTHORIZED, NOT_VALID_TOKEN);

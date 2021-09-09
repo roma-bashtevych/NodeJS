@@ -18,7 +18,7 @@ const {
     checkUserRole,
     checkUser
   },
-  authMiddlewar: { validateAccessToken }
+  authMiddlewar: { validateAccessToken, validateActionToken }
 } = require('../middlewars');
 
 router.get('/', validateDataDynamic(userValidator.queryUserValidator, QUERY), userController.getAllUsers);
@@ -44,5 +44,6 @@ router.patch('/:user_id',
   isUserNotPresent,
   checkUser,
   userController.updateUser);
+router.post('/activate', validateActionToken, userController.activateUser);
 
 module.exports = router;

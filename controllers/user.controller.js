@@ -1,7 +1,17 @@
-const { userServices, passwordServices, emailServices } = require('../services');
-const { userNormalizator: { userNormalizator } } = require('../utils');
 const {
-  MESSAGES: { UPDATE_MESSAGE }, statusCode, emailActionsEnum, userRolesEnum
+  userServices,
+  passwordServices,
+  emailServices,
+  jwtServices
+} = require('../services');
+const { userNormalizator: { userNormalizator } } = require('../utils');
+const { Action_Token } = require('../database');
+const {
+  MESSAGES: { UPDATE_MESSAGE, ACTIVAT },
+  statusCode,
+  emailActionsEnum,
+  userRolesEnum,
+  VAR: { FRONTEND_URL }
 } = require('../config');
 
 module.exports = {
@@ -35,7 +45,16 @@ module.exports = {
 
       const createdUser = await userServices.createUser({ ...req.body, password: hashedPassword });
       const userToReturn = userNormalizator(createdUser);
-      await emailServices.sendMail(userToReturn.email, emailActionsEnum.WELCOME, { userName: userToReturn.name });
+      const actionToken = jwtServices.generateActionToken();
+      const newActionToken = actionToken.action_token;
+
+      await Action_Token.create({
+        ...actionToken,
+        user: userToReturn
+      });
+
+      await emailServices.sendMail('oleg.duda.mail@gmail.com', emailActionsEnum.WELCOME,
+        { userName: userToReturn.name, forgotPasswordURL: `${FRONTEND_URL}/password?token=${newActionToken}` });
       res.status(statusCode.OK).json(userToReturn);
     } catch (e) {
       next(e);
@@ -69,5 +88,16 @@ module.exports = {
     } catch (e) {
       next(e);
     }
-  }
+  },
+  activateUser: async (req, res, next) => {
+    try {
+      const user = req.loginUser;
+
+      await userServices.updateUserById(user, { activat: true });
+
+           res.json(ACTIVAT);
+    } catch (e) {
+      next(e);
+    }
+  },
 };

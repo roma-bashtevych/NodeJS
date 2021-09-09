@@ -23,7 +23,12 @@ const userSchema = new Schema({
     type: String,
     default: userRolesEnum.USER,
     enum: Object.values(userRolesEnum)
-  }
+  },
+  activat: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
 }, { timestamps: true });
 
 module.exports = model(userRolesEnum.USER, userSchema);
