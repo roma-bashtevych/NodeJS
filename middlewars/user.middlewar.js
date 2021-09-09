@@ -103,7 +103,7 @@ module.exports = {
 
   validateDataDynamic: (validator, data = BODY) => (req, res, next) => {
     try {
-      const { error } = [validator].validate(req[data]);
+      const { error } = validator.validate(req[data]);
 
       if (error) {
         throw new ErrorHandler(statusCode.BAD_REQUEST, error.details[0].message);

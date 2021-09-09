@@ -2,7 +2,7 @@ module.exports = {
   PORT: process.env.PORT || 5000,
   DATABASE_URL: process.env.DATABASE_URL || 'mongodb://localhost:27017/apr-2021',
   ACCESS_SECRET_KEY: process.env.ACCESS_SECRET_KEY || 'secret_word',
-  FORGOT_SECRET_KEY: process.env.FORGOT_SECRET_KEY || 'secret_word_3',
+  ACTION_SECRET_KEY: process.env.ACTION_SECRET_KEY || 'secret_word_3',
   REFRESH_SECRET_KEY: process.env.REFRESH_SECRET_KEY || 'secret_word_2',
   AUTHORIZATION: 'Authorization',
   NO_REPLY_EMAIL: process.env.NO_REPLY_EMAIL || 'gdgdg@ukr.net',

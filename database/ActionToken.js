@@ -1,9 +1,9 @@
 const { Schema, model } = require('mongoose');
 
-const { DATABASE_TABLES: { USER, FORGOT_TOKEN } } = require('../config');
+const { DATABASE_TABLES: { USER, ACTION_TOKEN } } = require('../config');
 
-const ForgotTokenSchema = new Schema({
-  forgot_token: {
+const ActionTokenSchema = new Schema({
+  action_token: {
     type: String,
     required: true
   },
@@ -14,4 +14,4 @@ const ForgotTokenSchema = new Schema({
   }
 }, { timestamps: true });
 
-module.exports = model(FORGOT_TOKEN, ForgotTokenSchema);
+module.exports = model(ACTION_TOKEN, ActionTokenSchema);

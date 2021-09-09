@@ -7,6 +7,12 @@ const authValidator = Joi.object({
   password: Joi.string().regex(PASSWORD_REGEXP).required()
 });
 
+const authChangePassValidator = Joi.object({
+  old_password: Joi.string().regex(PASSWORD_REGEXP).required(),
+  password: Joi.string().regex(PASSWORD_REGEXP).required()
+});
+
 module.exports = {
-  authValidator
+  authValidator,
+  authChangePassValidator
 };

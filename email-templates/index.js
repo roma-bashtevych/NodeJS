@@ -21,8 +21,12 @@ module.exports = {
     templateName: 'deleteUser',
     subject: 'USER DELETED !!!'
   },
-  [emailActionsEnum.FORGOT]: {
-    templateName: 'forgot',
-    subject: 'FORGOT !!!'
+  [emailActionsEnum.ACTION]: {
+    templateName: 'action',
+    subject: 'ACTION !!!'
+  },
+  [emailActionsEnum.CHANGE]: {
+    templateName: 'changePassword',
+    subject: 'Your password was changed'
   }
 };

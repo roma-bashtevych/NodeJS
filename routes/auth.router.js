@@ -26,5 +26,8 @@ router.patch('/forgot', validateDataDynamic(authValidator.authValidator),
   validateForgotToken,
   validForgotPass,
   authController.newPassword);
+router.patch('/change', validateDataDynamic(authValidator.authChangePassValidator),
+  validateAccessToken,
+  authController.changePassword);
 
 module.exports = router;

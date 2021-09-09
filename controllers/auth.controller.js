@@ -3,10 +3,10 @@ const {
   jwtServices, emailServices, passwordServices, userServices
 } = require('../services');
 const { userNormalizator: { userNormalizator } } = require('../utils');
-const { OAuth, Forgot_Token } = require('../database');
+const { OAuth, Action_Token } = require('../database');
 const {
-  VAR: { AUTHORIZATION },
-  MESSAGES: { OK },
+  VAR: { AUTHORIZATION, FRONTEND_URL },
+  MESSAGES: { OK, UPDATE_MESSAGE },
   statusCode,
   emailActionsEnum
 } = require('../config');
@@ -74,16 +74,16 @@ module.exports = {
     try {
       const { user } = req;
 
-      const token = jwtServices.generateForgotToken();
+      const token = jwtServices.generateActionToken();
 
-      const newToken = token.forgot_token;
-      await Forgot_Token.create({
+      const newToken = token.action_token;
+      await Action_Token.create({
         ...token,
         user
       });
 
-      await emailServices.sendMail(user.email, emailActionsEnum.FORGOT,
-        { userName: user.name, token: newToken });
+      await emailServices.sendMail(user.email, emailActionsEnum.ACTION,
+        { userName: user.name, forgotPasswordURL: `${FRONTEND_URL}/password?token=${newToken}` });
 
       res.status(statusCode.UPDATE_AND_CREATE).json(OK);
     } catch (e) {
@@ -101,7 +101,7 @@ module.exports = {
 
       await emailServices.sendMail(loginUser.email, emailActionsEnum.WELCOME, { userName: loginUser.name });
 
-      await Forgot_Token.deleteOne({ user: loginUser.id });
+      await Action_Token.deleteOne({ user: loginUser.id });
 
       await OAuth.deleteMany({ user: loginUser.id });
 
@@ -110,4 +110,20 @@ module.exports = {
       next(e);
     }
   },
+
+  changePassword: async (req, res, next) => {
+    try {
+      const { loginUser, body: { old_password, password } } = req;
+
+      await compare(loginUser.password, old_password);
+      const hashedPassword = await passwordServices.hash(password);
+
+      await userServices.updateUserById(loginUser, { password: hashedPassword });
+      await emailServices.sendMail(loginUser.email, emailActionsEnum.CHANGE, { userName: loginUser.name });
+
+      res.status(statusCode.UPDATE_AND_CREATE).json(UPDATE_MESSAGE);
+    } catch (e) {
+      next(e);
+    }
+  }
 };
