@@ -6,7 +6,8 @@ const {
   MESSAGES: {
     NOT_FOUND, INPUT_ALREADY, FORBIDDEN
   },
-  statusCode
+  statusCode,
+  userRolesEnum
 } = require('../config');
 
 module.exports = {
@@ -113,5 +114,18 @@ module.exports = {
     } catch (e) {
       next(e);
     }
-  }
+  },
+  checkAdminRole: (req, res, next) => {
+    try {
+      const user = req.loginUser;
+
+      if (user.role !== userRolesEnum.ADMIN) {
+        throw new ErrorHandler(statusCode.FORBIDDEN, FORBIDDEN);
+      }
+
+      next();
+    } catch (e) {
+      next(e);
+    }
+  },
 };

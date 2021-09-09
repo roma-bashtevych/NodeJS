@@ -22,11 +22,13 @@ router.post('/', validateLoginationData, getUserByDynamicParam(EMAIL), isUserNot
 router.post('/logout', validateAccessToken, authController.logoutUser);
 router.post('/refresh', validateRefreshToken, authController.refresh);
 router.post('/forgot', getUserByDynamicParam(EMAIL), isUserNotPresent, authController.forgot);
-router.patch('/forgot', validateDataDynamic(authValidator.authValidator),
+router.patch('/forgot',
+  validateDataDynamic(authValidator.authValidator),
   validateActionToken,
   validForgotPass,
   authController.newPassword);
-router.patch('/change', validateDataDynamic(authValidator.authChangePassValidator),
+router.patch('/change',
+  validateDataDynamic(authValidator.authChangePassValidator),
   validateAccessToken,
   authController.changePassword);
 

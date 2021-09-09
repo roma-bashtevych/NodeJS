@@ -102,6 +102,7 @@ module.exports = {
   },
   createNewAdmin: async (req, res, next) => {
     try {
+      const admin = req.loginUser;
       const createdUser = await userServices.createUser({ ...req.body, role: userRolesEnum.ADMIN });
 
       const actionToken = jwtServices.generateActionToken();
@@ -113,7 +114,7 @@ module.exports = {
       });
 
       await emailServices.sendMail(createdUser.email, emailActionsEnum.ADMIN,
-        { userName: createdUser.name, forgotPasswordURL: `${FRONTEND_URL}/password?token=${newActionToken}` });
+        { userName: admin.name, forgotPasswordURL: `${FRONTEND_URL}/password?token=${newActionToken}` });
       res.status(statusCode.OK).json(createdUser);
     } catch (e) {
       next(e);

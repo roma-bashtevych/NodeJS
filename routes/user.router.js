@@ -1,9 +1,15 @@
-const router = require('express').Router();
+const router = require('express')
+  .Router();
 
 const {
   userRolesEnum,
   CONSTANTS: {
-    USER_ID, PARAMS, DB_FIELD, EMAIL, BODY, QUERY
+    USER_ID,
+    PARAMS,
+    DB_FIELD,
+    EMAIL,
+    BODY,
+    QUERY
   }
 } = require('../config');
 const { userValidator } = require('../validators');
@@ -16,9 +22,13 @@ const {
     isUserNotPresent,
     getUserByDynamicParam,
     checkUserRole,
+    checkAdminRole,
     checkUser
   },
-  authMiddlewar: { validateAccessToken, validateActionToken }
+  authMiddlewar: {
+    validateAccessToken,
+    validateActionToken
+  }
 } = require('../middlewars');
 
 router.get('/', validateDataDynamic(userValidator.queryUserValidator, QUERY), userController.getAllUsers);
@@ -26,6 +36,13 @@ router.post('/', validateDataDynamic(userValidator.createUserValidator, BODY),
   getUserByDynamicParam(EMAIL),
   isUserPresent,
   userController.createUser);
+router.post('/admin',
+  validateAccessToken,
+  checkAdminRole,
+  userController.createNewAdmin);
+router.patch('/admin',
+  validateActionToken,
+  userController.changePasswordAdmin);
 router.get('/:user_id', validateDataDynamic(userValidator.paramsUserValidator, PARAMS),
   getUserByDynamicParam(USER_ID, PARAMS, DB_FIELD),
   userController.getSingleUser);
@@ -45,13 +62,5 @@ router.patch('/:user_id',
   checkUser,
   userController.updateUser);
 router.post('/activate', validateActionToken, userController.activateUser);
-router.post('/:user_id/admin',
-  validateAccessToken,
-  getUserByDynamicParam(USER_ID, PARAMS, DB_FIELD),
-  checkUserRole([userRolesEnum.ADMIN]),
-  userController.createNewAdmin);
-router.patch('/:user_id/admin',
-  validateActionToken,
-  userController.changePasswordAdmin);
 
 module.exports = router;
