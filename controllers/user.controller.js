@@ -12,6 +12,7 @@ const {
   emailActionsEnum,
   userRolesEnum,
   VAR: {
+    AUTHORIZATION,
     FRONTEND_URL,
     ADMIN_SECRET_KEY,
     ADMIN_SECRET_EXPIRES_IN,
@@ -56,7 +57,7 @@ module.exports = {
 
       await Action_Token.create({
         ...actionToken,
-        user: userToReturn
+        user: userToReturn._id
       });
 
       await emailServices.sendMail(userToReturn.email, emailActionsEnum.WELCOME,
@@ -70,12 +71,13 @@ module.exports = {
   deleteUser: async (req, res, next) => {
     try {
       const { user_id } = req.params;
-      const { user } = req.loginUser;
+      const user = req.loginUser;
+      const userByid = req.user;
 
       if (user.role === userRolesEnum.ADMIN) {
-        await emailServices.sendMail(req.user.email, emailActionsEnum.DELETE_ADMIN, { userName: req.user.name });
+        await emailServices.sendMail(userByid.email, emailActionsEnum.DELETE_ADMIN, { userName: userByid.name });
       } else {
-        await emailServices.sendMail(req.user.email, emailActionsEnum.DELETE_USER, { userName: req.user.name });
+        await emailServices.sendMail(userByid.email, emailActionsEnum.DELETE_USER, { userName: userByid.name });
       }
 
       await userServices.deleteUser({ _id: user_id });
@@ -101,10 +103,11 @@ module.exports = {
   activateUser: async (req, res, next) => {
     try {
       const user = req.loginUser;
+      const action_token = req.get(AUTHORIZATION);
 
-      await userServices.updateUserById({ id: user._id }, { activat: true });
-
-      await Action_Token.deleteOne({ user: user.id });
+      await userServices.updateUserById({ _id: user.id }, { activat: true });
+      console.log(user.id);
+      await Action_Token.deleteOne({ action_token });
       res.json(ACTIVAT);
     } catch (e) {
       next(e);
@@ -121,7 +124,7 @@ module.exports = {
 
       await Action_Token.create({
         ...actionToken,
-        user: createdUser
+        user: createdUser._id
       });
 
       await emailServices.sendMail(createdUser.email, emailActionsEnum.ADMIN,
@@ -135,6 +138,7 @@ module.exports = {
   changePasswordAdmin: async (req, res, next) => {
     try {
       const { loginUser, body: { password } } = req;
+      const action_token = req.get(AUTHORIZATION);
 
       const hashedPassword = await passwordServices.hash(password);
 
@@ -142,7 +146,7 @@ module.exports = {
 
       await emailServices.sendMail(loginUser.email, emailActionsEnum.CHANGE, { userName: loginUser.name });
 
-      await Action_Token.deleteOne({ user: loginUser.id });
+      await Action_Token.deleteOne({ action_token });
 
       res.status(statusCode.UPDATE_AND_CREATE).json(UPDATE_MESSAGE);
     } catch (e) {

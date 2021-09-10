@@ -40,9 +40,9 @@ router.post('/', validateDataDynamic(userValidator.createUserValidator, BODY),
   userController.createUser);
 
 router.post('/admin',
+  validateDataDynamic(userValidator.createUserValidator, BODY),
   validateAccessToken,
   checkAdminRole,
-  validateDataDynamic(userValidator.createUserValidator, BODY),
   getUserByDynamicParam(EMAIL),
   userController.createNewAdmin);
 

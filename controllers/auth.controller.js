@@ -57,7 +57,7 @@ module.exports = {
     try {
       const refresh_token = req.get(AUTHORIZATION);
       const user = req.loginUser;
-
+      console.log(user._id);
       await OAuth.deleteOne({ refresh_token });
 
       const tokenPair = jwtServices.generateTokenPair();
@@ -84,7 +84,7 @@ module.exports = {
       const newToken = token.action_token;
       await Action_Token.create({
         ...token,
-        user
+        user: user._id
       });
 
       await emailServices.sendMail(user.email, emailActionsEnum.ACTION,
@@ -99,6 +99,7 @@ module.exports = {
   newPassword: async (req, res, next) => {
     try {
       const { loginUser, body: { password } } = req;
+      const action_token = req.get(AUTHORIZATION);
 
       const hashedPassword = await passwordServices.hash(password);
 
@@ -106,7 +107,7 @@ module.exports = {
 
       await emailServices.sendMail(loginUser.email, emailActionsEnum.WELCOME, { userName: loginUser.name });
 
-      await Action_Token.deleteOne({ user: loginUser.id });
+      await Action_Token.deleteOne({ action_token });
 
       await OAuth.deleteMany({ user: loginUser.id });
 
