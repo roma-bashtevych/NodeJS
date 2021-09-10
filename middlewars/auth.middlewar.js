@@ -72,7 +72,7 @@ module.exports = {
     }
   },
 
-  validateActionToken: async (req, res, next) => {
+  validateActionToken: (key) => async (req, res, next) => {
     try {
       const action_token = req.get(AUTHORIZATION);
 
@@ -80,7 +80,7 @@ module.exports = {
         throw new ErrorHandler(statusCode.UNAUTHORIZED, UNAUTHORIZED);
       }
 
-      await verifyActionToken(action_token);
+      await verifyActionToken(action_token, key);
 
       const tokenfromDB = await Action_Token.findOne({ action_token }).populate(USER);
 

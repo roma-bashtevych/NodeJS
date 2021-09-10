@@ -5,7 +5,12 @@ const {
 const { userNormalizator: { userNormalizator } } = require('../utils');
 const { OAuth, Action_Token } = require('../database');
 const {
-  VAR: { AUTHORIZATION, FRONTEND_URL },
+  VAR: {
+    AUTHORIZATION,
+    FRONTEND_URL,
+    ACTION_SECRET_KEY,
+    ACTION_SECRET_EXPIRES_IN
+  },
   MESSAGES: { OK, UPDATE_MESSAGE },
   statusCode,
   emailActionsEnum
@@ -74,7 +79,7 @@ module.exports = {
     try {
       const { user } = req;
 
-      const token = jwtServices.generateActionToken();
+      const token = jwtServices.generateActionToken(ACTION_SECRET_KEY, ACTION_SECRET_EXPIRES_IN);
 
       const newToken = token.action_token;
       await Action_Token.create({
@@ -97,7 +102,7 @@ module.exports = {
 
       const hashedPassword = await passwordServices.hash(password);
 
-      await userServices.updateUser({ password: hashedPassword });
+      await userServices.updateUserById({ _id: loginUser.id }, { password: hashedPassword });
 
       await emailServices.sendMail(loginUser.email, emailActionsEnum.WELCOME, { userName: loginUser.name });
 

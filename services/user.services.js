@@ -7,7 +7,6 @@ module.exports = {
 
   deleteUser: (userId) => User.deleteOne(userId),
 
-  updateUserById: (userId, data) => User.updateOne(userId, data),
+  updateUserById: (userId, data) => User.updateOne(userId, data)
 
-  updateUser: (item) => User.updateOne(item)
 };

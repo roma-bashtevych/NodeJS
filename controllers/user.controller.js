@@ -11,7 +11,13 @@ const {
   statusCode,
   emailActionsEnum,
   userRolesEnum,
-  VAR: { FRONTEND_URL }
+  VAR: {
+    FRONTEND_URL,
+    ADMIN_SECRET_KEY,
+    ADMIN_SECRET_EXPIRES_IN,
+    ACTION_SECRET_KEY,
+    ACTION_SECRET_EXPIRES_IN
+  }
 } = require('../config');
 
 module.exports = {
@@ -45,7 +51,7 @@ module.exports = {
 
       const createdUser = await userServices.createUser({ ...req.body, password: hashedPassword });
       const userToReturn = userNormalizator(createdUser);
-      const actionToken = jwtServices.generateActionToken();
+      const actionToken = jwtServices.generateActionToken(ACTION_SECRET_KEY, ACTION_SECRET_EXPIRES_IN);
       const newActionToken = actionToken.action_token;
 
       await Action_Token.create({
@@ -64,7 +70,9 @@ module.exports = {
   deleteUser: async (req, res, next) => {
     try {
       const { user_id } = req.params;
-      if (req.user.role === userRolesEnum.ADMIN) {
+      const { user } = req.loginUser;
+
+      if (user.role === userRolesEnum.ADMIN) {
         await emailServices.sendMail(req.user.email, emailActionsEnum.DELETE_ADMIN, { userName: req.user.name });
       } else {
         await emailServices.sendMail(req.user.email, emailActionsEnum.DELETE_USER, { userName: req.user.name });
@@ -89,23 +97,26 @@ module.exports = {
       next(e);
     }
   },
+
   activateUser: async (req, res, next) => {
     try {
       const user = req.loginUser;
 
-      await userServices.updateUserById(user, { activat: true });
+      await userServices.updateUserById({ id: user._id }, { activat: true });
 
+      await Action_Token.deleteOne({ user: user.id });
       res.json(ACTIVAT);
     } catch (e) {
       next(e);
     }
   },
+
   createNewAdmin: async (req, res, next) => {
     try {
       const admin = req.loginUser;
-      const createdUser = await userServices.createUser({ ...req.body, role: userRolesEnum.ADMIN });
+      const createdUser = await userServices.createUser({ ...req.body });
 
-      const actionToken = jwtServices.generateActionToken();
+      const actionToken = jwtServices.generateActionToken(ADMIN_SECRET_KEY, ADMIN_SECRET_EXPIRES_IN);
       const newActionToken = actionToken.action_token;
 
       await Action_Token.create({
@@ -120,14 +131,18 @@ module.exports = {
       next(e);
     }
   },
+
   changePasswordAdmin: async (req, res, next) => {
     try {
       const { loginUser, body: { password } } = req;
 
       const hashedPassword = await passwordServices.hash(password);
 
-      await userServices.updateUserById(loginUser, { password: hashedPassword });
+      await userServices.updateUserById({ _id: loginUser.id }, { password: hashedPassword });
+
       await emailServices.sendMail(loginUser.email, emailActionsEnum.CHANGE, { userName: loginUser.name });
+
+      await Action_Token.deleteOne({ user: loginUser.id });
 
       res.status(statusCode.UPDATE_AND_CREATE).json(UPDATE_MESSAGE);
     } catch (e) {

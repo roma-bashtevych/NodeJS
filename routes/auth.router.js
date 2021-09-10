@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
-const { CONSTANTS: { EMAIL } } = require('../config');
-const { authValidator } = require('../validators');
+const { CONSTANTS: { EMAIL, BODY }, VAR: { ACTION_SECRET_KEY } } = require('../config');
+const { authValidator, userValidator } = require('../validators');
 
 const { authController } = require('../controllers');
 const {
@@ -13,20 +13,27 @@ const {
   }, userMiddlewar: {
     validateDataDynamic,
     isUserNotPresent,
-    getUserByDynamicParam,
-    validForgotPass
+    getUserByDynamicParam
   }
 } = require('../middlewars');
 
 router.post('/', validateLoginationData, getUserByDynamicParam(EMAIL), isUserNotPresent, authController.loginUser);
+
 router.post('/logout', validateAccessToken, authController.logoutUser);
+
 router.post('/refresh', validateRefreshToken, authController.refresh);
-router.post('/forgot', getUserByDynamicParam(EMAIL), isUserNotPresent, authController.forgot);
+
+router.post('/forgot',
+  validateDataDynamic(authValidator.authEmailValidator, BODY),
+  getUserByDynamicParam(EMAIL),
+  isUserNotPresent,
+  authController.forgot);
+
 router.patch('/forgot',
-  validateDataDynamic(authValidator.authValidator),
-  validateActionToken,
-  validForgotPass,
+  validateDataDynamic(userValidator.updateForgotValidator),
+  validateActionToken(ACTION_SECRET_KEY),
   authController.newPassword);
+
 router.patch('/change',
   validateDataDynamic(authValidator.authChangePassValidator),
   validateAccessToken,
