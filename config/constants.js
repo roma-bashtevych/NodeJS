@@ -10,5 +10,12 @@ module.exports = {
   REFRESH: 'refresh',
   ACCESS: 'access',
   BODY: 'body',
-  QUERY: 'query'
+  QUERY: 'query',
+  PHOTO_MAX_SIZE: 5 * 1024 * 1024,
+  MIMETYPES: {
+    PHOTO: [
+      'image/jpeg',
+      'image/png'
+    ]
+  }
 };

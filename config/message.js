@@ -11,5 +11,7 @@ module.exports = {
   OK: 'ok',
   NOT_VALID_TOKEN: 'Not valid token',
   TEMPLATE: 'wrong template name',
-  ACTIVAT: 'Acount activated'
+  ACTIVAT: 'Acount activated',
+  BIG_FILE: 'Sorry file is too big',
+  FILE_FORMAT: 'Wrong file format'
 };

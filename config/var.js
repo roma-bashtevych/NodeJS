@@ -11,4 +11,8 @@ module.exports = {
   FRONTEND_URL: process.env.FRONTEND_URL || 'https://google.com',
   ACTION_SECRET_EXPIRES_IN: process.env.ACTION_SECRET_EXPIRES_IN || '30m',
   ADMIN_SECRET_EXPIRES_IN: process.env.ADMIN_SECRET_EXPIRES_IN || '1d',
+  AWS_S3_NAME: process.env.AWS_S3_NAME || '',
+  AWS_S3_REGION: process.env.AWS_S3_REGION || '',
+  AWS_S3_ACCESS_KEY: process.env.AWS_S3_ACCESS_KEY || '',
+  AWS_S3_SECRET_KEY: process.env.AWS_S3_SECRET_KEY || ''
 };

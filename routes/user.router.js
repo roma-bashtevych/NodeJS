@@ -29,12 +29,16 @@ const {
   authMiddlewar: {
     validateAccessToken,
     validateActionToken
+  },
+  fileMiddlewar: {
+    checkAvatar
   }
 } = require('../middlewars');
 
 router.get('/', validateDataDynamic(userValidator.queryUserValidator, QUERY), userController.getAllUsers);
 
 router.post('/', validateDataDynamic(userValidator.createUserValidator, BODY),
+  checkAvatar,
   getUserByDynamicParam(EMAIL),
   isUserPresent,
   userController.createUser);

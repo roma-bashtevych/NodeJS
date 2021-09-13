@@ -2,7 +2,8 @@ const {
   userServices,
   passwordServices,
   emailServices,
-  jwtServices
+  jwtServices,
+  s3Services
 } = require('../services');
 const { userNormalizator: { userNormalizator } } = require('../utils');
 const { Action_Token } = require('../database');
@@ -50,7 +51,18 @@ module.exports = {
 
       const hashedPassword = await passwordServices.hash(password);
 
-      const createdUser = await userServices.createUser({ ...req.body, password: hashedPassword });
+      let createdUser = await userServices.createUser({ ...req.body, password: hashedPassword });
+      const { avatar } = req.files;
+
+      if (req.files && avatar) {
+        const s3Response = await s3Services.uploadFile(avatar, 'users', createdUser._id);
+        createdUser = await userServices.findByIdAndUpdate(
+          createdUser._id,
+          { avatar: s3Response.Location },
+          { new: true }
+        );
+      }
+
       const userToReturn = userNormalizator(createdUser);
       const actionToken = jwtServices.generateActionToken(ACTION_SECRET_KEY, ACTION_SECRET_EXPIRES_IN);
       const newActionToken = actionToken.action_token;
@@ -62,7 +74,7 @@ module.exports = {
 
       await emailServices.sendMail(userToReturn.email, emailActionsEnum.WELCOME,
         { userName: userToReturn.name, forgotPasswordURL: `${FRONTEND_URL}/password?token=${newActionToken}` });
-      res.status(statusCode.OK).json(userToReturn);
+      res.status(statusCode.OK).json({ userToReturn });
     } catch (e) {
       next(e);
     }
@@ -91,8 +103,18 @@ module.exports = {
     try {
       const { user_id } = req.params;
 
+      const { avatar } = req.files;
+
       await userServices.updateUserById({ _id: user_id }, req.body);
 
+      if (req.files && avatar) {
+        const s3Response = await s3Services.uploadFile(avatar, 'users', user_id);
+        await userServices.findByIdAndUpdate(
+          user_id,
+          { avatar: s3Response.Location },
+          { new: true }
+        );
+      }
       await emailServices.sendMail(req.user.email, emailActionsEnum.UPDATE, { userName: req.user.name });
       res.status(statusCode.UPDATE_AND_CREATE).json(UPDATE_MESSAGE);
     } catch (e) {
@@ -106,7 +128,7 @@ module.exports = {
       const action_token = req.get(AUTHORIZATION);
 
       await userServices.updateUserById({ _id: user.id }, { activat: true });
-      console.log(user.id);
+
       await Action_Token.deleteOne({ action_token });
       res.json(ACTIVAT);
     } catch (e) {
