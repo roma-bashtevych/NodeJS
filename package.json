@@ -24,6 +24,7 @@
     "husky": "4.3.3",
     "lint-staged": "^11.1.2",
     "nodemon": "^2.0.12",
+    "morgan": "^1.10.0",
     "@types/nodemailer": "^6.4.4",
     "@types/email-templates": "^8.0.4"
   },

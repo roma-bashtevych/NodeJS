@@ -14,6 +14,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(expressFileUpload());
 
+if (process.env.NODE_ENV === 'dev') {
+  // eslint-disable-next-line import/no-extraneous-dependencies
+  const morgan = require('morgan');
+  app.use(morgan('dev'));
+}
+
 const { userRouter, carRouter, authRouter } = require('./routes');
 
 app.get('/ping', (req, res) => res.json('pong'));
