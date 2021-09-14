@@ -17,5 +17,7 @@ module.exports = {
       'image/jpeg',
       'image/png'
     ]
-  }
+  },
+  AMAZON: 'amazonaws.com/',
+  USERS: 'users'
 };

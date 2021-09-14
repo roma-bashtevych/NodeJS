@@ -4,11 +4,11 @@ const { ErrorHandler } = require('../errors');
 module.exports = {
   checkAvatar: (req, res, next) => {
     try {
-      const { avatar } = req.files;
-      if (!req.files || !avatar) {
+      if (!req.files || !req.files.avatar) {
         next();
         return;
       }
+      const { avatar } = req.files;
 
       const { size, mimetype } = avatar;
       if (size > PHOTO_MAX_SIZE) {

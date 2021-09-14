@@ -19,6 +19,9 @@ const {
     ADMIN_SECRET_EXPIRES_IN,
     ACTION_SECRET_KEY,
     ACTION_SECRET_EXPIRES_IN
+  },
+  CONSTANTS: {
+    USERS
   }
 } = require('../config');
 
@@ -52,10 +55,10 @@ module.exports = {
       const hashedPassword = await passwordServices.hash(password);
 
       let createdUser = await userServices.createUser({ ...req.body, password: hashedPassword });
-      const { avatar } = req.files;
 
-      if (req.files && avatar) {
-        const s3Response = await s3Services.uploadFile(avatar, 'users', createdUser._id);
+      if (req.files && req.files.avatar) {
+        const { avatar } = req.files;
+        const s3Response = await s3Services.uploadFile(avatar, USERS, createdUser._id);
         createdUser = await userServices.findByIdAndUpdate(
           createdUser._id,
           { avatar: s3Response.Location },
@@ -86,6 +89,10 @@ module.exports = {
       const user = req.loginUser;
       const userByid = req.user;
 
+      if (user.avatar) {
+        await s3Services.deleteFile(user.avatar);
+      }
+
       if (user.role === userRolesEnum.ADMIN) {
         await emailServices.sendMail(userByid.email, emailActionsEnum.DELETE_ADMIN, { userName: userByid.name });
       } else {
@@ -103,17 +110,20 @@ module.exports = {
     try {
       const { user_id } = req.params;
 
-      const { avatar } = req.files;
+      if (req.files && req.files.avatar) {
+        if (req.user.avatar) {
+          await s3Services.deleteFile(req.user.avatar);
+        }
 
-      await userServices.updateUserById({ _id: user_id }, req.body);
-
-      if (req.files && avatar) {
-        const s3Response = await s3Services.uploadFile(avatar, 'users', user_id);
+        const { avatar } = req.files;
+        const s3Response = await s3Services.uploadFile(avatar, USERS, user_id);
         await userServices.findByIdAndUpdate(
           user_id,
-          { avatar: s3Response.Location },
+          { ...req.body, avatar: s3Response.Location },
           { new: true }
         );
+      } else {
+        await userServices.updateUserById({ _id: user_id }, req.body);
       }
       await emailServices.sendMail(req.user.email, emailActionsEnum.UPDATE, { userName: req.user.name });
       res.status(statusCode.UPDATE_AND_CREATE).json(UPDATE_MESSAGE);

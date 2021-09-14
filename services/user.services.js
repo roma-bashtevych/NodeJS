@@ -9,6 +9,6 @@ module.exports = {
 
   updateUserById: (userId, data) => User.updateOne(userId, data),
 
-  findByIdAndUpdate: (userId, avatar, newObj) => User.findByIdAndUpdate(userId, avatar, newObj)
+  findByIdAndUpdate: (userId, data, newObj) => User.findByIdAndUpdate(userId, data, newObj)
 
 };

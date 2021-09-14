@@ -8,6 +8,9 @@ const {
     AWS_S3_REGION,
     AWS_S3_ACCESS_KEY,
     AWS_S3_SECRET_KEY
+  },
+  CONSTANTS: {
+    AMAZON
   }
 } = require('../config');
 
@@ -30,11 +33,19 @@ module.exports = {
         ContentType: mimetype
       })
       .promise();
+  },
+  deleteFile: (Filelocation) => {
+    const Key = Filelocation.split(AMAZON)[1];
+
+    return bucket.deleteObject({
+      Bucket: AWS_S3_NAME,
+      Key,
+    }).promise();
   }
 };
 
 function _fileNameBuilder(fileName, itemType, itemId) {
-const fileExtension = path.extname(fileName);
+  const fileExtension = path.extname(fileName);
 
-return path.join(itemType, itemId, `${uuid()}${fileExtension}`);
+  return path.posix.join(itemType, itemId, `${uuid()}${fileExtension}`);
 }
