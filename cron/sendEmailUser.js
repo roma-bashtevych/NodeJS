@@ -15,10 +15,8 @@ module.exports = async () => {
     console.log('no users logged in 10 days ago');
     return;
   }
-  // const emails = users.map((user) => user.email);
-  //  await emailServices.sendMail(emails, emailActionsEnum.HELLO);
-  for (const user of users) {
-    // eslint-disable-next-line no-await-in-loop
+
+  for await (const user of users) {
     await emailServices.sendMail(user.email, emailActionsEnum.HELLO, { userName: user.name });
   }
 };
