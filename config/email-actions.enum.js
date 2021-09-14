@@ -6,5 +6,6 @@ module.exports = {
   AUTH: 'auth',
   ACTION: 'action',
   CHANGE: 'change',
-  ADMIN: 'admin'
+  ADMIN: 'admin',
+  HELLO: 'hello'
 };

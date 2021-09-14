@@ -1,14 +1,26 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
+const cors = require('cors');
 const expressFileUpload = require('express-fileupload');
+const expressRateLimit = require('express-rate-limit');
 
 require('dotenv').config();
 
-const { VAR: { PORT, DATABASE_URL }, MESSAGES: { NOT_FOUND }, statusCode } = require('./config');
+const { VAR: { PORT, DATABASE_URL, ALOWED_ORIGINS }, MESSAGES: { NOT_FOUND, CORS }, statusCode } = require('./config');
+const { ErrorHandler } = require('./errors');
+const cronJobs = require('./cron');
 
 const app = express();
 
 mongoose.connect(DATABASE_URL);
+
+app.use(helmet());
+app.use(cors({ origin: _configureCors }));
+app.use(expressRateLimit({
+  windowMS: 15 * 60 * 1000,
+  max: 1000
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,6 +43,7 @@ app.use(_mainErrorHandler);
 
 app.listen(PORT, () => {
   console.log('App listen', PORT);
+  cronJobs();
 });
 
 function _notFoundError(err, req, res, next) {
@@ -47,4 +60,18 @@ function _mainErrorHandler(err, req, res, next) {
     .json({
       message: err.message
     });
+}
+
+function _configureCors(origin, callback) {
+  const writeList = ALOWED_ORIGINS.split(';');
+
+  if (!origin && process.env.NODE_ENV === 'dev') {
+    return callback(null, true);
+  }
+
+  if (!writeList.includes(origin)) {
+    return callback(new ErrorHandler(statusCode.FORBIDDEN, CORS), false);
+  }
+
+  return callback(null, true);
 }

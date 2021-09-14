@@ -13,5 +13,6 @@ module.exports = {
   TEMPLATE: 'wrong template name',
   ACTIVAT: 'Acount activated',
   BIG_FILE: 'Sorry file is too big',
-  FILE_FORMAT: 'Wrong file format'
+  FILE_FORMAT: 'Wrong file format',
+  CORS: 'CORS not allowed'
 };

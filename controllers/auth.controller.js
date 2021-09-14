@@ -31,7 +31,7 @@ module.exports = {
         ...tokenPair,
         user: user._id
       });
-
+ await userServices.findByIdAndUpdate({ _id: user.id }, { lastLogin: Date.now() });
       await emailServices.sendMail(user.email, emailActionsEnum.AUTH, { userName: user.name });
       res.status(statusCode.UPDATE_AND_CREATE).json({
         ...tokenPair,
