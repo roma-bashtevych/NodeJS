@@ -20,5 +20,8 @@ module.exports = {
   },
   AMAZON: 'amazonaws.com/',
   USERS: 'users',
-  DAY: 'day'
+  DAY: 'day',
+  MONTH: 'month',
+  CRON_DEL_TOKEN: '0 0 1 * * *',
+  CRON_SEND_MAIL: '30 6 * * 1,3,5'
 };
