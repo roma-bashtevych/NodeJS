@@ -31,10 +31,6 @@ const userSchema = new Schema({
   },
   avatar: {
     type: String
-  },
-  lastLogin: {
-    type: Date,
-    default: Date.now()
   }
 }, { timestamps: true });
 
