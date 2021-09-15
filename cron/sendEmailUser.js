@@ -4,11 +4,11 @@ const utc = require('dayjs/plugin/utc');
 datJs.extend(utc);
 
 const { emailServices } = require('../services');
-const { emailActionsEnum } = require('../config');
+const { emailActionsEnum, CONSTANTS: { DAY } } = require('../config');
 const { User } = require('../database');
 
 module.exports = async () => {
-  const tenDays = datJs.utc().subtract(10, 'day');
+  const tenDays = datJs.utc().subtract(10, DAY);
 
   const users = await User.find({ lastLogin: { $lt: tenDays } });
   if (!users) {

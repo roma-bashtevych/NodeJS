@@ -19,5 +19,6 @@ module.exports = {
     ]
   },
   AMAZON: 'amazonaws.com/',
-  USERS: 'users'
+  USERS: 'users',
+  DAY: 'day'
 };
