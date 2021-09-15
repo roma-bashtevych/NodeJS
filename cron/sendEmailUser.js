@@ -12,8 +12,11 @@ module.exports = async () => {
 
   const tokens = await OAuth.find({ createdAt: { $lte: tenDays } }).populate(USER);
 
-  for await (const token of tokens) {
+  const promise = tokens.map(async (token) => {
     const { user: { email, name } } = token;
+
     await emailServices(email, emailActionsEnum.HELLO, { userName: name });
-  }
+  });
+
+  await Promise.all(promise);
 };
