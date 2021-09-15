@@ -20,5 +20,9 @@ module.exports = {
   AWS_S3_ACCESS_KEY: process.env.AWS_S3_ACCESS_KEY || '',
   AWS_S3_SECRET_KEY: process.env.AWS_S3_SECRET_KEY || '',
 
-  ALOWED_ORIGINS: process.env.ALOWED_ORIGINS || ''
+  ALOWED_ORIGINS: process.env.ALOWED_ORIGINS || '',
+
+  NAME_FIRST_ADMIN: process.env.NAME_FIRST_ADMIN || 'ADMIN',
+  PASS_FIRST_ADMIN: process.env.PASS_FIRST_ADMIN || '12345',
+  EMAIL_FIRST_ADMIN: process.env.EMAIL_FIRST_ADMIN || 'admin_email@gmail.com'
 };

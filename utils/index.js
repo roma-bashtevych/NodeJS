@@ -1,3 +1,4 @@
 module.exports = {
-  userNormalizator: require('./user.util')
+  userNormalizator: require('./user.util'),
+  defaultData: require('./defaultData')
 };
