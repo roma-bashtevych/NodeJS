@@ -1,0 +1,529 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "apr 2021",
+    "version": "0.0.1",
+    "description": "First project NodeJs",
+    "contact": {
+      "name": "Roman Bashtevych",
+      "email": "roma_bashtevich@ukr.net"
+    }
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "operationId": "getAllUsers",
+        "description": "get all user",
+        "parameters": [
+          {
+            "name": "perPage",
+            "in": "query",
+            "description": "How many users will show in page",
+            "required": false,
+            "default": 10,
+            "type": "number"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "page number",
+            "required": false,
+            "default": 1,
+            "type": "number"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "user name",
+            "required": false,
+            "default": "roman",
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "user email",
+            "required": false,
+            "default": "roma@gmail.com",
+            "type": "string"
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "description": "user role",
+            "required": false,
+            "default": "user",
+            "type": "array",
+            "enum": ["user", "admin"]
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "order",
+            "required": false,
+            "default": "asc",
+            "type": "array",
+            "enum": ["asc", "desc"]
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "sort by",
+            "required": false,
+            "default": "createdAt",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All users info arr",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/singleUser"
+              }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/errorSchema"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "description": "Create user",
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "default": "Roman",
+            "description": "User name"
+          },
+          {
+            "name": "email",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "default": "roman.doe@example.com",
+            "description": "User email"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "description": "User password"
+          },
+          {
+            "name": "role",
+            "in": "formData",
+            "type": "string",
+            "required": false,
+            "description": "User role"
+          },
+          {
+            "name": "avatar",
+            "in": "formData",
+            "type": "file",
+            "required": false,
+            "description": "User avatar"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User was created",
+            "schema": {
+              "$ref": "#/definitions/singleUser"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/errorSchema"
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "users/id"
+        ],
+        "description": "Update user",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "type": "string",
+            "required": false,
+            "default": "Roman",
+            "description": "User name"
+          },
+          {
+            "name": "email",
+            "in": "formData",
+            "type": "string",
+            "required": false,
+            "default": "roman.doe@example.com",
+            "description": "User email"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "type": "string",
+            "required": false,
+            "description": "User password"
+          },
+          {
+            "name": "avatar",
+            "in": "formData",
+            "type": "file",
+            "required": false,
+            "description": "User avatar"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string",
+            "required": true,
+            "default": "access_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User was created",
+            "schema": {
+              "$ref": "#/definitions/singleUser"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/errorSchema"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "users/id"
+        ],
+        "description": "Delete user",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "description": "user will be delete"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string",
+            "required": true,
+            "default": "access_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User was created",
+            "schema": {
+              "$ref": "#/definitions/singleUser"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/errorSchema"
+            }
+          }
+        }
+      }
+    },
+    "/cars": {
+      "get": {
+        "tags": [
+          "cars"
+        ],
+        "operationId": "getAllCars",
+        "description": "get all cars",
+        "parameters": [
+          {
+            "name": "perPage",
+            "in": "query",
+            "description": "How many cars will show in page",
+            "required": false,
+            "default": 10,
+            "type": "number"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "page number",
+            "required": false,
+            "default": 1,
+            "type": "number"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "order",
+            "required": false,
+            "default": "asc",
+            "type": "array",
+            "enum": ["asc", "desc"]
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "sort by",
+            "required": false,
+            "default": "createdAt",
+            "type": "string"
+          },
+          {
+            "name": "model",
+            "in": "query",
+            "default": "bmw",
+            "type": "string",
+            "required": false,
+            "description": "How many cars will be returned"
+          },
+          {
+            "name": "yearFrom",
+            "in": "formData",
+            "type": "number",
+            "required": false,
+            "description": "car from year"
+          },
+          {
+            "name": "yearTo",
+            "in": "formData",
+            "type": "number",
+            "required": false,
+            "description": "car to year"
+          },
+          {
+            "name": "priceFrom",
+            "in": "formData",
+            "type": "number",
+            "required": false,
+            "description": "car from price"
+          },
+          {
+            "name": "priceTo",
+            "in": "formData",
+            "type": "number",
+            "required": false,
+            "description": "car to price"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All cars info arr",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/singleCar"
+              }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/errorSchema"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "cars"
+        ],
+        "description": "Create car",
+        "operationId": "createCar",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "default": "bmw",
+            "description": "car model"
+          },
+          {
+            "name": "year",
+            "in": "formData",
+            "type": "number",
+            "required": false,
+            "description": "car year"
+          },
+          {
+            "name": "price",
+            "in": "formData",
+            "type": "number",
+            "required": false,
+            "description": "car price"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "car was created",
+            "schema": {
+              "$ref": "#/definitions/singleCar"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/errorCar"
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "cars/id"
+        ],
+        "description": "Update car",
+        "operationId": "updateCar",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "formData",
+            "type": "string",
+            "required": false
+
+          },
+          {
+            "name": "price",
+            "in": "formData",
+            "type": "number",
+            "required": false
+
+          },
+          {
+            "name": "year",
+            "in": "formData",
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "car was updated",
+            "schema": {
+              "$ref": "#/definitions/singleUser"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/errorSchema"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "cars/id"
+        ],
+        "description": "Delete car",
+        "operationId": "deleteCar",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "default": "bmw",
+            "description": "car model"
+          },
+          {
+            "name": "year",
+            "in": "formData",
+            "type": "number",
+            "required": false,
+            "description": "car year"
+          },
+          {
+            "name": "price",
+            "in": "formData",
+            "type": "number",
+            "required": false,
+            "description": "car price"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Car was created",
+            "schema": {
+              "$ref": "#/definitions/singleUser"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/errorSchema"
+            }
+          }
+        }
+      }
+    }
+      },
+  "definitions": {
+    "errorSchema": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "Error message",
+          "example": "Email or password is wrong"
+        },
+        "code": {
+          "description": "custom code",
+          "example": 200,
+          "type": "number"
+        }
+      }
+    },
+    "singleUser": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "example": "err789jsjs78iuis8"
+        },
+        "email": {
+          "type": "string",
+          "example": "admin_email@example.com"
+        }
+      }
+    },
+    "singleCar": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "example": "err789jsjs78iuis8"
+        },
+        "model": {
+          "type": "string",
+          "example": "bmw"
+        }
+      }
+    }
+  }
+}

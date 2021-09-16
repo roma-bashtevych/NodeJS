@@ -39,7 +39,7 @@ module.exports = {
 
   getAllUsers: async (req, res, next) => {
     try {
-      const users = await userServices.findUsers(req.query);
+      const users = await userServices.getAllUsers(req.query);
       const allUsers = users.map((user) => userNormalizator(user));
 
       res.json(allUsers);

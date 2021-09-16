@@ -9,8 +9,7 @@ const {
     PARAMS,
     DB_FIELD,
     EMAIL,
-    BODY,
-    QUERY
+    BODY
   }
 } = require('../config');
 const { userValidator } = require('../validators');
@@ -35,7 +34,7 @@ const {
   }
 } = require('../middlewars');
 
-router.get('/', validateDataDynamic(userValidator.queryUserValidator, QUERY), userController.getAllUsers);
+router.get('/', userController.getAllUsers);
 
 router.post('/', validateDataDynamic(userValidator.createUserValidator, BODY),
   checkAvatar,

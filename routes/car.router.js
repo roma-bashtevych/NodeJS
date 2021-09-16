@@ -5,7 +5,6 @@ const { CONSTANTS: { CAR_ID, PARAMS, DB_FIELD } } = require('../config');
 const { carController } = require('../controllers');
 const {
   carMiddlewar: {
-    validateCarQuery,
     validateCarParams,
     validateUpdateCar,
     validateCreateCar,
@@ -13,7 +12,7 @@ const {
   }
 } = require('../middlewars');
 
-router.get('/', validateCarQuery, carController.getAllCar);
+router.get('/', carController.getAllCar);
 
 router.post('/', validateCreateCar, carController.createCar);
 

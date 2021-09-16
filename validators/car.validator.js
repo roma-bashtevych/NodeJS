@@ -22,18 +22,6 @@ const paramsCarValidator = Joi.object({
     .trim()
 });
 
-const queryCarValidator = Joi.object({
-  model: Joi.string()
-    .alphanum()
-    .min(2)
-    .max(50)
-    .trim(),
-  year: Joi.number()
-    .max(CURRENT_YEAR),
-  price: Joi.number()
-    .min(1000)
-});
-
 const updateCar = Joi.object({
   model: Joi.string()
     .min(2)
@@ -47,6 +35,5 @@ const updateCar = Joi.object({
 module.exports = {
   createCar,
   updateCar,
-  paramsCarValidator,
-  queryCarValidator
+  paramsCarValidator
 };
