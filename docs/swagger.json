@@ -132,7 +132,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "User was created",
             "schema": {
               "$ref": "#/definitions/singleUser"
@@ -150,7 +150,7 @@
     "/users/{user_id}": {
       "patch": {
         "tags": [
-          "users/id"
+          "users/user_id"
         ],
         "description": "Update user",
         "operationId": "updateUser",
@@ -160,7 +160,7 @@
             "in": "path",
             "type": "string",
             "required": true,
-            "description": "user will be delete"
+            "description": "user will be update"
           },
           {
             "name": "name",
@@ -191,8 +191,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "User was created",
+          "201": {
+            "description": "User was updated",
             "schema": {
               "$ref": "#/definitions/singleUser"
             }
@@ -207,7 +207,7 @@
       },
       "delete": {
         "tags": [
-          "users/id"
+          "users/user_id"
         ],
         "description": "Delete user",
         "operationId": "deleteUser",
@@ -228,11 +228,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "User was created",
-            "schema": {
-              "$ref": "#/definitions/singleUser"
-            }
+          "204": {
+            "description": "User was deleted"
           },
           "400": {
             "description": "bad request",
@@ -359,7 +356,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "car was created",
             "schema": {
               "$ref": "#/definitions/singleCar"
@@ -374,20 +371,20 @@
         }
       }
     },
-    "/cars/{cars_id}": {
+    "/cars/{car_id}": {
       "patch": {
         "tags": [
-          "cars/id"
+          "cars/car_id"
         ],
         "description": "Update car",
         "operationId": "updateCar",
         "parameters": [
           {
-            "name": "cars_id",
+            "name": "car_id",
             "in": "path",
             "type": "string",
             "required": true,
-            "description": "user will be delete"
+            "description": "car will be update"
           },
           {
             "name": "model",
@@ -406,10 +403,10 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "car was updated",
             "schema": {
-              "$ref": "#/definitions/singleUser"
+              "$ref": "#/definitions/singleCar"
             }
           },
           "400": {
@@ -422,13 +419,13 @@
       },
       "delete": {
         "tags": [
-          "cars/id"
+          "cars/car_id"
         ],
         "description": "Delete car",
         "operationId": "deleteCar",
         "parameters": [
           {
-            "name": "cars_id",
+            "name": "car_id",
             "in": "path",
             "type": "string",
             "required": true,
@@ -436,12 +433,9 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Car was created",
-            "schema": {
-              "$ref": "#/definitions/singleUser"
-            }
-          },
+          "204": {
+            "description": "Car was delete"
+           },
           "400": {
             "description": "bad request",
             "schema": {
