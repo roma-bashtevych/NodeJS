@@ -156,7 +156,7 @@
         "operationId": "updateUser",
         "parameters": [
           {
-            "name": "id",
+            "name": "user_id",
             "in": "path",
             "type": "string",
             "required": true,
@@ -213,7 +213,7 @@
         "operationId": "deleteUser",
         "parameters": [
           {
-            "name": "id",
+            "name": "user_id",
             "in": "path",
             "type": "string",
             "required": true,
@@ -383,7 +383,7 @@
         "operationId": "updateCar",
         "parameters": [
           {
-            "name": "id",
+            "name": "cars_id",
             "in": "path",
             "type": "string",
             "required": true,
@@ -428,7 +428,7 @@
         "operationId": "deleteCar",
         "parameters": [
           {
-            "name": "id",
+            "name": "cars_id",
             "in": "path",
             "type": "string",
             "required": true,
