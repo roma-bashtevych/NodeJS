@@ -22,7 +22,6 @@
             "name": "perPage",
             "in": "query",
             "description": "How many users will show in page",
-            "required": false,
             "default": 10,
             "type": "number"
           },
@@ -30,7 +29,6 @@
             "name": "page",
             "in": "query",
             "description": "page number",
-            "required": false,
             "default": 1,
             "type": "number"
           },
@@ -38,7 +36,6 @@
             "name": "name",
             "in": "query",
             "description": "user name",
-            "required": false,
             "default": "roman",
             "type": "string"
           },
@@ -46,7 +43,6 @@
             "name": "email",
             "in": "query",
             "description": "user email",
-            "required": false,
             "default": "roma@gmail.com",
             "type": "string"
           },
@@ -54,7 +50,6 @@
             "name": "role",
             "in": "query",
             "description": "user role",
-            "required": false,
             "default": "user",
             "type": "array",
             "enum": ["user", "admin"]
@@ -63,7 +58,6 @@
             "name": "order",
             "in": "query",
             "description": "order",
-            "required": false,
             "default": "asc",
             "type": "array",
             "enum": ["asc", "desc"]
@@ -72,7 +66,6 @@
             "name": "sortBy",
             "in": "query",
             "description": "sort by",
-            "required": false,
             "default": "createdAt",
             "type": "string"
           }
@@ -129,14 +122,12 @@
             "name": "role",
             "in": "formData",
             "type": "string",
-            "required": false,
             "description": "User role"
           },
           {
             "name": "avatar",
             "in": "formData",
             "type": "file",
-            "required": false,
             "description": "User avatar"
           }
         ],
@@ -154,7 +145,9 @@
             }
           }
         }
-      },
+      }
+    },
+    "/users/{user_id}": {
       "patch": {
         "tags": [
           "users/id"
@@ -163,10 +156,16 @@
         "operationId": "updateUser",
         "parameters": [
           {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true,
+            "description": "user will be delete"
+          },
+          {
             "name": "name",
             "in": "formData",
             "type": "string",
-            "required": false,
             "default": "Roman",
             "description": "User name"
           },
@@ -174,22 +173,13 @@
             "name": "email",
             "in": "formData",
             "type": "string",
-            "required": false,
             "default": "roman.doe@example.com",
             "description": "User email"
-          },
-          {
-            "name": "password",
-            "in": "formData",
-            "type": "string",
-            "required": false,
-            "description": "User password"
           },
           {
             "name": "avatar",
             "in": "formData",
             "type": "file",
-            "required": false,
             "description": "User avatar"
           },
           {
@@ -224,9 +214,9 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "path",
             "type": "string",
-            "required": false,
+            "required": true,
             "description": "user will be delete"
           },
           {
@@ -265,7 +255,6 @@
             "name": "perPage",
             "in": "query",
             "description": "How many cars will show in page",
-            "required": false,
             "default": 10,
             "type": "number"
           },
@@ -273,7 +262,6 @@
             "name": "page",
             "in": "query",
             "description": "page number",
-            "required": false,
             "default": 1,
             "type": "number"
           },
@@ -281,7 +269,6 @@
             "name": "order",
             "in": "query",
             "description": "order",
-            "required": false,
             "default": "asc",
             "type": "array",
             "enum": ["asc", "desc"]
@@ -290,7 +277,6 @@
             "name": "sortBy",
             "in": "query",
             "description": "sort by",
-            "required": false,
             "default": "createdAt",
             "type": "string"
           },
@@ -299,35 +285,30 @@
             "in": "query",
             "default": "bmw",
             "type": "string",
-            "required": false,
             "description": "How many cars will be returned"
           },
           {
             "name": "yearFrom",
             "in": "formData",
             "type": "number",
-            "required": false,
             "description": "car from year"
           },
           {
             "name": "yearTo",
             "in": "formData",
             "type": "number",
-            "required": false,
             "description": "car to year"
           },
           {
             "name": "priceFrom",
             "in": "formData",
             "type": "number",
-            "required": false,
             "description": "car from price"
           },
           {
             "name": "priceTo",
             "in": "formData",
             "type": "number",
-            "required": false,
             "description": "car to price"
           }
         ],
@@ -368,14 +349,12 @@
             "name": "year",
             "in": "formData",
             "type": "number",
-            "required": false,
             "description": "car year"
           },
           {
             "name": "price",
             "in": "formData",
             "type": "number",
-            "required": false,
             "description": "car price"
           }
         ],
@@ -393,7 +372,9 @@
             }
           }
         }
-      },
+      }
+    },
+    "/cars/{cars_id}": {
       "patch": {
         "tags": [
           "cars/id"
@@ -402,18 +383,21 @@
         "operationId": "updateCar",
         "parameters": [
           {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true,
+            "description": "user will be delete"
+          },
+          {
             "name": "model",
             "in": "formData",
-            "type": "string",
-            "required": false
-
+            "type": "string"
           },
           {
             "name": "price",
             "in": "formData",
-            "type": "number",
-            "required": false
-
+            "type": "number"
           },
           {
             "name": "year",
@@ -444,26 +428,11 @@
         "operationId": "deleteCar",
         "parameters": [
           {
-            "name": "model",
-            "in": "formData",
+            "name": "id",
+            "in": "path",
             "type": "string",
             "required": true,
-            "default": "bmw",
-            "description": "car model"
-          },
-          {
-            "name": "year",
-            "in": "formData",
-            "type": "number",
-            "required": false,
-            "description": "car year"
-          },
-          {
-            "name": "price",
-            "in": "formData",
-            "type": "number",
-            "required": false,
-            "description": "car price"
+            "description": "car will be delete"
           }
         ],
         "responses": {
