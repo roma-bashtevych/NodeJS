@@ -11,8 +11,16 @@ require('dotenv').config();
 const { VAR: { PORT, DATABASE_URL, ALOWED_ORIGINS }, MESSAGES: { NOT_FOUND, CORS }, statusCode } = require('./config');
 const { ErrorHandler } = require('./errors');
 const cronJobs = require('./cron');
+const db = require('./database/mySQL').getInstance();
 
-const { userRouter, carRouter, authRouter } = require('./routes');
+db.setModels();
+
+const {
+  userRouter,
+  carRouter,
+  authRouter,
+  clientRouter
+} = require('./routes');
 const swaggerJson = require('./docs/swagger.json');
 
 const app = express();
@@ -41,6 +49,7 @@ app.get('/ping', (req, res) => res.json('pong'));
 app.use('/auth', authRouter);
 app.use('/users', userRouter);
 app.use('/cars', carRouter);
+app.use('/clients', clientRouter);
 app.use('*', _notFoundError);
 app.use(_mainErrorHandler);
 
